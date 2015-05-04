@@ -3,7 +3,6 @@ package com.example.reproductormp4prima;
 import java.io.File;
 
 import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber.Exception;
 
 import android.app.Activity;

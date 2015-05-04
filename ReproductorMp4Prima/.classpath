@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="C:/Users/administrador/Desktop/javacv-0.11-bin/javacv-bin/flandmark-android-x86.jar"/>
+	<classpathentry kind="lib" path="C:/Users/administrador/Desktop/javacv-0.11-bin/javacv-bin/artoolkitplus-android-x86.jar"/>
+	<classpathentry kind="lib" path="C:/Users/administrador/Desktop/javacv-0.11-bin/javacv-bin/ffmpeg-android-x86.jar"/>
+	<classpathentry kind="lib" path="C:/Users/administrador/Desktop/javacv-0.11-bin/javacv-bin/opencv-android-x86.jar"/>
+	<classpathentry kind="lib" path="C:/Users/administrador/Desktop/javacv-0.11-bin/javacv-bin/flandmark-android-arm.jar"/>
+	<classpathentry kind="lib" path="C:/Users/administrador/Desktop/javacv-0.11-bin/javacv-bin/artoolkitplus-android-arm.jar"/>
+	<classpathentry kind="lib" path="C:/Users/administrador/Desktop/javacv-0.11-bin/javacv-bin/ffmpeg-android-arm.jar"/>
+	<classpathentry kind="lib" path="C:/Users/administrador/Desktop/javacv-0.11-bin/javacv-bin/opencv-android-arm.jar"/>
+	<classpathentry kind="lib" path="C:/Users/administrador/Desktop/javacv-0.11-bin/javacv-bin/javacv.jar"/>
+	<classpathentry kind="lib" path="C:/Users/administrador/Desktop/javacv-0.11-bin/javacv-bin/ffmpeg.jar"/>
+	<classpathentry kind="lib" path="C:/Users/administrador/Desktop/javacv-0.11-bin/javacv-bin/opencv.jar"/>
+	<classpathentry kind="lib" path="C:/Users/administrador/Desktop/javacv-0.11-bin/javacv-bin/javacpp.jar"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
