@@ -1,5 +1,52 @@
 <ion-view view-title="Home">
-  <ion-content>
-    <h1>Home</h1>
-  </ion-content>
+	 <ion-content class="has-header">
+		<div class="list" ng-controller="HomeCtrl">
+
+			<a class="item item-thumbnail-left" style="margin-left: -65px" href="#">
+				<iframe class="youtube-player" type="text/html" width="250px" height="150px" frameborder="0"
+			    		src="https://www.youtube.com/embed/WKAgKlnfkDA?controls=0&showinfo=0">		
+				</iframe>
+				<h2>Grand Canyon</h2>
+				<p>Recorrido por el gran cañon</p>
+				 
+
+				<button class="button button-positive" ng-click="share1()">
+					<i class="icon ion-share"></i>
+				</button>	
+				<!--<p href="http://www.facebook.com/sharer.php?u=https://simplesharebuttons.com" target="_blank"
+					img src="https://simplesharebuttons.com/images/somacro/facebook.png" alt="Facebook" style="width:1%">
+				</p>
+
+				<a class="tab-item" ng-click="share()">
+				 	<i class="icon ion-share"></i>
+				 </a>	-->
+
+			</a>
+
+			<a class="item item-thumbnail-left" style="margin-left: -65px" href="#">
+				<iframe class="youtube-player" type="text/html" width="250px" height="150px" frameborder="0"
+			    		src="https://www.youtube.com/embed/6uG9vtckp1U?controls=0&showinfo=0">		
+				</iframe>
+				<h2>Stars Wars</h2>
+				<p>Guerra de las galaxias</p>
+				<button class="button button-positive" ng-click="share2()">
+					<i class="icon ion-share"></i>
+				</button>	
+			</a>
+
+
+			<a class="item item-thumbnail-left" style="margin-left: -65px" href="#">
+				<iframe class="youtube-player" type="text/html" width="250px" height="150px" frameborder="0"
+			    		src="https://www.youtube.com/embed/LdTm7Vpape0?controls=0&showinfo=0">		
+				</iframe>
+				<h2>The Avengers</h2>
+				<p>Los vengadores: La batalla</p>
+				<button class="button button-positive" ng-click="share3()">
+					<i class="icon ion-share"></i>
+				</button>	
+			</a>
+
+		</div>
+
+	</ion-content>
 </ion-view>

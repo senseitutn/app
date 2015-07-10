@@ -5,10 +5,12 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 
+//Creamos la base de datos como una variable global para que se pueda acceder desde cualquier metodo y controlador
+//var db = null;
 
-angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB'])
+angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB', 'ngCordova'])
 
-.run(function($ionicPlatform, ngFB) {
+.run(function($ionicPlatform, ngFB, $cordovaSQLite) {
 
   ngFB.init({appId: '1431925717111021'});
 
@@ -22,6 +24,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB'])
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+   //db = $cordovaSQLite.openDB("senseIT");
+
+   //&cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS videos (id integer primary key, path text, url text)");
 
 
   });
@@ -50,7 +56,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB'])
     url: "/home",
     views: {
       'menuContent': {
-        templateUrl: "templates/home.html"
+        templateUrl: "templates/home.html",
+        controller: 'HomeCtrl'
       }
     }
   })
@@ -75,7 +82,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB'])
   }
 })
 
-  .state('app.session', {
+.state('app.session', {
     url: "/sessions/:sessionId",
     views: {
         'menuContent': {

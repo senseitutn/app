@@ -1,7 +1,21 @@
 /* Empty. Add your own CSS if you like */
-.titulo {
-	font-weight: bold !important;
-	font-size: 20px !important;
-	background-color: blue;
-	color: white;
+
+.smaller{
+	font-size: 40px !important;
+	max-width: 55px !important;
+	max-height: 50px !important;
+	margin: 0 !important;
+	padding: 0 0 0 0 !important;
+}
+
+.center {
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    position: absolute !important;
+    margin:0 auto;
+    width:100%;
 }
