@@ -1,9 +1,28 @@
-<ion-modal-view style="width:100%; height:100%;">
-  <ion-content class="center">   
-    <form ng-submit="login()">     
-      <button class="button button-block button-positive" margin-top="200px" ng-click="fbLogin()">
+<!--<ion-modal-view style="width:100%; height:100%;">
+  <ion-content class="center"> 
+
+      <button class="button button-block button-positive" margin-top="200px" padding-left="5%" padding-right="5%" ng-click="fbLogin()">
         Login con Facebook
-      </button>            
-    </form>
+      </button>              
   </ion-content>
+</ion-modal-view> -->
+
+
+<ion-modal-view style="width:100%; height:100%;">
+	<ion-view view-title="Login">
+		<ion-content class="has-header">
+			<div class="list card" valign="center">
+			  <div class="item" align="center">
+			    <img src="img/logo_transparent.png" width="50%" height="50%" align="center">
+			    <p>Sense IT</p>
+			  </div>
+			  <a class="item" align="center" href="#">
+			    <button class="button button-block button-positive" margin-top="200px" ng-click="fbLogin()">
+		        	Login con Facebook
+		      	</button> 
+		      </a>
+
+			</div>
+	    </ion-content>
+	</ion-view>
 </ion-modal-view>

@@ -25,11 +25,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB', 'ngCordov
       StatusBar.styleDefault();
     }
 
-   //db = $cordovaSQLite.openDB("senseIT");
-
-   //&cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS videos (id integer primary key, path text, url text)");
-
-
   });
 })
 

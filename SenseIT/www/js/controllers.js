@@ -1,8 +1,7 @@
 
+angular.module('starter.controllers', ['ionic.utils', 'starter.services', 'ngOpenFB'])
 
-angular.module('starter.controllers', ['starter.services', 'ngOpenFB'])
-
-.controller('AppCtrl', function($scope, $state, $window, $ionicModal, $timeout, ngFB, $ionicPlatform, $cordovaFile) {
+.controller('AppCtrl', function($scope, $state, $ionicModal, localstorage, $timeout, ngFB, $ionicPlatform, $window) {
 
   // Form data for the login modal
   $scope.loginData = {};
@@ -21,39 +20,13 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB'])
       if (token === null)
       {
         $scope.login();
-      }else
-      {
-        //$state.go('browse');
       }
       
       });
       
     });
-      /*ngFB.getLoginStatus(function (response) {
-        alert(response.status);
-        console.log(response);
-
-        if (response.status !== 'connected') {
-          $scope.login();
-        }        
-        $scope.statusChangeCallback(response);*/
       
  
-          
-
-  
-
- /* $scope.statusChangeCallback = function(){
-      if(response.status === 'connected'){
-
-        alert('conectada');
-      }else if( response.status === 'not_authorized'){
-        alert('no aut');
-      }else{
-        alert('otro');
-      }
-    };  */
-
   // Triggered in the login modal to close it
   $scope.closeLogin = function() {
     $scope.modal.hide();
@@ -69,13 +42,26 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB'])
         function (response) {
             if (response.status === 'connected') {
                 console.log('Facebook login succeeded');
-              /*  var existe = $cordovaFile.checkFile("/Android/data/com.ionicframework.conference978360/files", "token");
-                if(!existe){
-                  $cordovaFile.createFile("/Android/data/com.ionicframework.conference978360/files", "token", true);
-                };
-                $cordovaFile.writeFile("/Android/data/com.ionicframework.conference978360/files", "token", "response.authResponse.accessToken", true);
-              */
+     
                 window.localStorage.setItem('TokenResponse', response.authResponse.accessToken);
+                ngFB.api({
+                        path: '/me',
+                        params: {access_token: window.localStorage.TokenResponse, fields: 'id,name'}
+                        }).then(
+                        function (user) {                          
+                            localstorage.setObject('user', {
+                            name: user.name,
+                            id: user.id,
+                            city: user.city
+                            });
+
+                          },
+
+                        
+                        function (error) {
+                            alert('Facebook error: ' + error.error_description);
+                        });
+                 
                 $scope.closeLogin();
             } else {
                 alert('Facebook login failed');
@@ -97,8 +83,6 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB'])
 })
 
 .controller('HomeCtrl', function($scope, $stateParams, ngFB, $cordovaSocialSharing){
-
-
 
   $scope.share1 = function(){
 
@@ -174,24 +158,73 @@ $scope.share3 = function (event) {
 
 })
 
-.controller('ProfileCtrl', function ($scope, ngFB) {
+.controller('ProfileCtrl', function ($scope, $state, ngFB, localstorage, $ionicModal) {
 
- //var exists = $cordovaFile.checkFile("/Android/data/com.ionicframework.conference978360/files", "token");
+  $scope.user = localstorage.getObject('user');
+  $scope.fbLogin = function () {
+  ngFB.login({scope: 'email,read_stream,publish_actions'}).then(
+      function (response) {
+          if (response.status === 'connected') {
+              console.log('Facebook login succeeded');
+   
+              window.localStorage.setItem('TokenResponse', response.authResponse.accessToken);
+              ngFB.api({
+                      path: '/me',
+                      params: {access_token: window.localStorage.TokenResponse, fields: 'id,name'}
+                      }).then(
+                      function (user) {                          
+                          localstorage.setObject('user', {
+                          name: user.name,
+                          id: user.id,
+                          city: user.city
+                          });
 
- //if (exists){var token = $cordovaFile.readAsText("/Android/data/com.ionicframework.conference978360/files", "token");};
+                        },
 
- ngFB.api({
-        path: '/me',
-        params: {access_token: window.localStorage.TokenResponse, fields: 'id,name'}
-    }).then(
-        function (user) {
-            $scope.user = user;
-        },
-        function (error) {
-            alert('Facebook error: ' + error.error_description);
-        });
-  
+                      
+                      function (error) {
+                          alert('Facebook error: ' + error.error_description);
+                      });
+               
+              $scope.closeLogin();
+          } else {
+              alert('Facebook login failed');
+          }
+      });
+  };
+
+  // Triggered in the login modal to close it
+  $scope.closeLogin = function() {
+    $scope.modal.hide();
+  };
+
+  $scope.fbLogout = function() {
+    ngFB.logout();
+    //delete local storage information
+    localstorage.deleteObject('user');
+    //delete scope user
+    $scope.user = null;
+    //show login modal again
+    // Form data for the login modal
+    $scope.loginData = {};
+ 
+    // Create the login modal that we will use later
+    $ionicModal.fromTemplateUrl('templates/login.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+      }).then(function(modal) {
+        $scope.modal = modal;
+        $state.go('app.home');
+        $scope.modal.show();
+
+    }) ;
+
+
+  }
 })
+
+
+
 
 .controller("FileCtrl", function($scope, $ionicLoading) {
  
