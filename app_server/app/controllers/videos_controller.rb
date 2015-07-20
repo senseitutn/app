@@ -22,9 +22,8 @@ class VideosController < ApplicationController
 		respond_with Video.destroy(params[:id])
 	end
 
-
 	private
 		def video_params
-			params.require(:video).permit(:name,:path,:description,:duration,:uploaded_at)
+			params.require(:video).permit(:title,:url,:description,:duration,:uploaded_at)
 		end
 end

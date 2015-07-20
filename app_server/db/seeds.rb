@@ -7,14 +7,27 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 # Video
-# name, path, description, duration, uploaded_at
+# tile, url, description, url_preview, uploaded_at
 
 video_list = [
-	[ "duro de matar", nil, "se trata de un tipo que caga a corchazos a todos y nadie lo puede boletear", 2.15, nil],
-	[ "frozen", nil, "otra pelicula ladri de disney sobre princesas", 1.15, nil],
-	[ "piratas del caribe", nil, "johnny depp chorea otra vez con un personaje estrafalario",2.30,nil]
+	[ "duro de matar", nil, "se trata de un tipo que caga a corchazos a todos y nadie lo puede boletear", nil, nil],
+	[ "frozen", nil, "otra pelicula ladri de disney sobre princesas", nil, nil],
+	[ "piratas del caribe", nil, "johnny depp chorea otra vez con un personaje estrafalario", nil, nil]
 ]
 
 video_list.each do |video|
-	Video.create( :name => video[0], :description => video[2], :duration => video[3])
+	Video.create( :title => video[0], :description => video[2])
+end
+
+# User
+# userame, password, name, surname, falied_login_count
+
+user_list = [
+	["pepe-perez","mipassword1","pepe","perez",nil],
+	["mgarcia","mipassword2","mariano","garcia",nil],
+	["fgomez","mipassword3","florencia","gomez",nil]
+]
+
+user_list.each do |user|
+	User.create( :username => user[0], :password => user[1], :name => user[2], :surname => user[3])
 end

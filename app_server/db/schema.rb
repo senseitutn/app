@@ -11,7 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150714034510) do
+ActiveRecord::Schema.define(version: 20150720121155) do
+
+  create_table "api_keys", force: :cascade do |t|
+    t.string   "access_token"
+    t.integer  "user_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
 
   create_table "consumer_videos", force: :cascade do |t|
     t.integer  "video_id"
@@ -50,6 +57,17 @@ ActiveRecord::Schema.define(version: 20150714034510) do
     t.integer  "visits_count"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string   "username"
+    t.string   "password"
+    t.string   "name"
+    t.string   "surname"
+    t.integer  "failed_login_count"
+    t.datetime "disabled_at"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
   end
 
   create_table "videos", force: :cascade do |t|

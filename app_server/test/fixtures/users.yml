@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  username: MyString
+  password: MyString
+  name: MyString
+  surname: MyString
+  failed_login_count: 1
+  disabled_at: 2015-07-15 11:12:32
+
+two:
+  username: MyString
+  password: MyString
+  name: MyString
+  surname: MyString
+  failed_login_count: 1
+  disabled_at: 2015-07-15 11:12:32
