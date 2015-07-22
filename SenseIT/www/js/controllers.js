@@ -72,17 +72,26 @@ angular.module('starter.controllers', ['ionic.utils', 'starter.services', 'ngOpe
 })
 
 
-.controller('SessionsCtrl', function($scope, Session) {
-    $scope.sessions = Session.query();
+.controller('VideosCtrl', function($scope, Video) {
+  //Me conecto a la BD
+  // $scope.sessions = Session.query();
 })
 
-.controller('SessionCtrl', function($scope, $stateParams, Session, ngFB) {
-    $scope.session = Session.get({sessionId: $stateParams.sessionId});
-
-    
+.controller('VideoCtrl', function($scope, $stateParams, Video) {
+    //Me conecto a la base y Pido el video con el id
+    //$scope.session = Session.get({sessionId: $stateParams.sessionId});
 })
 
-.controller('HomeCtrl', function($scope, $stateParams, ngFB, $cordovaSocialSharing){
+.controller('HomeCtrl', function($scope, $stateParams, ngFB, $cordovaSocialSharing, $http){
+
+  $http.get('192.168.1.128:3000/api/v1/videos').then(function(resp) {
+    $scope.resp = resp.data;
+  }, function(err) {
+    console.error('ERR', err);
+    // err.status will contain the status code
+  });
+
+
 
   $scope.share1 = function(){
 
@@ -223,8 +232,15 @@ $scope.share3 = function (event) {
   }
 })
 
+.controller('MessagePostCtrl', function($scope, $http) {
 
-
+    $http.get('http://echo.jsontest.com/conditions/frightful').then(function(resp) {
+    $scope.conditions = resp.data.conditions;
+  }, function(err) {
+    console.error('ERR', err);
+    // err.status will contain the status code
+  })
+})
 
 .controller("FileCtrl", function($scope, $ionicLoading) {
  

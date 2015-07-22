@@ -67,22 +67,33 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB', 'ngCordov
     }
 })
   
-  .state('app.sessions', {
-  url: "/sessions",
+  .state('app.videos', {
+  url: "/videos",
   views: {
       'menuContent': {
-          templateUrl: "templates/sessions.html",
-          controller: 'SessionsCtrl'
+          templateUrl: "templates/videos.html",
+          controller: 'VideosCtrl'
       }
   }
 })
 
-.state('app.session', {
-    url: "/sessions/:sessionId",
+  .state('app.historial', {
+  url: "/historial",
+  views: {
+      'menuContent': {
+          templateUrl: "templates/historial.html",
+          controller: 'HistorialCtrl'
+      }
+  }
+})
+
+
+.state('app.video', {
+    url: "/video/:videoId",
     views: {
         'menuContent': {
-          templateUrl: "templates/session.html",
-          controller: 'SessionCtrl'
+          templateUrl: "templates/video.html",
+          controller: 'videoCtrl'
       }
     }
 });;
