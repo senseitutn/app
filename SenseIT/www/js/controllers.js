@@ -1,7 +1,6 @@
+angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'ngResource'])
 
-angular.module('starter.controllers', ['ionic.utils', 'starter.services', 'ngOpenFB'])
-
-.controller('AppCtrl', function($scope, $state, $ionicModal, localstorage, $timeout, ngFB, $ionicPlatform, $window) {
+.controller('AppCtrl', function($scope, $state, $ionicModal, localstorage, $timeout, ngFB, $ionicPlatform, $window, user) {
 
   // Form data for the login modal
   $scope.loginData = {};
@@ -46,13 +45,17 @@ angular.module('starter.controllers', ['ionic.utils', 'starter.services', 'ngOpe
                 window.localStorage.setItem('TokenResponse', response.authResponse.accessToken);
                 ngFB.api({
                         path: '/me',
-                        params: {access_token: window.localStorage.TokenResponse, fields: 'id,name'}
+                        params: {access_token: window.localStorage.TokenResponse, fields: 'id,name,locale,email,first_name,last_name,birthday'}
                         }).then(
                         function (user) {                          
                             localstorage.setObject('user', {
-                            name: user.name,
                             id: user.id,
-                            city: user.city
+                            name: user.name,
+                            city: user.locale,
+                            first_name: user.first_name,
+                            last_name: user.last_name,
+                            email: user.email,
+                            birthday: user.birthday
                             });
 
                           },
@@ -61,7 +64,24 @@ angular.module('starter.controllers', ['ionic.utils', 'starter.services', 'ngOpe
                         function (error) {
                             alert('Facebook error: ' + error.error_description);
                         });
-                 
+                  
+                  
+                    //mando al servidor el usuario para que lo cree 
+                    var serverIp = window.localStorage.getItem('serverIp');
+                    var newUser = new user();
+                    var fbUser = window.localStorage.getItem('user');
+                    newUser.id = fbUser.id;
+                    newUser.name = fbUser.name;
+                    newUser.first_name = fbUser.first_name;
+                    newUser.last_name = fbUser.last_name;
+                    newUser.email = fbUser.email;
+                    newUser.birthday = fbUser.birthday;
+                    
+                    url.save(newUser, function(){});
+                    
+                  
+                  
+                
                 $scope.closeLogin();
             } else {
                 alert('Facebook login failed');
@@ -82,17 +102,38 @@ angular.module('starter.controllers', ['ionic.utils', 'starter.services', 'ngOpe
     //$scope.session = Session.get({sessionId: $stateParams.sessionId});
 })
 
-.controller('HomeCtrl', function($scope, $stateParams, ngFB, $cordovaSocialSharing, $http){
+.controller('historialCtrl', function($scope, $timeout, $cordovaFileTransfer, $resource){
 
-  $http.get('192.168.1.128:3000/api/v1/videos').then(function(resp) {
-    $scope.resp = resp.data;
-  }, function(err) {
-    console.error('ERR', err);
-    // err.status will contain the status code
+    //busco id usuario en localStorage
+    //var idUsuario = window.localStorage.getItem('user').id;
+
+    //pido ultimos 10 videos vistos por el usuario con el id
+   // var serverIp = window.localStorage.getItem('serverIp');
+   // var url = $resource(serverIp + 'users/:id/histories');
+   //$scope.historial = url.get({ id: idUsuario}, function(){});
+   $scope.historial = '{"historial": [ {"idVideo": "132", "nombre": "Star Wars", "Descripcion": "La guerra de las galaxias", "1erFrame": "api/v1/132/1erFrame" }, {"idVideo": "133", "nombre": "Grand Canyon", "Descripcion": "Recorrido por el gran canon", "1erFrame": "api/v1/132/1erFrame" }] } ';
+
+    //hago un ng-repeat en el html
+
+    //recorro el json y saco las URL
+
+
+    //descargo en localStorage cada primera imagen para mostrar el preview
+
+    //si clickea en un video termino de descargar todo el resto de los frames
+
+
+})
+
+.controller('HomeCtrl', function($scope, $stateParams, ngFB, $cordovaSocialSharing,  $resource, dbServices){
+  /*
+  // Trae todo el json y muestra solo el titulo
+  var jsons = dbServices.query(function(){
+    var  json = jsons[0];
+    $scope.titulo = json.title;
   });
-
-
-
+  */
+  
   $scope.share1 = function(){
 
     $cordovaSocialSharing
@@ -232,7 +273,7 @@ $scope.share3 = function (event) {
   }
 })
 
-.controller('MessagePostCtrl', function($scope, $http) {
+/*.controller('MessagePostCtrl', function($scope, $http) {
 
     $http.get('http://echo.jsontest.com/conditions/frightful').then(function(resp) {
     $scope.conditions = resp.data.conditions;
@@ -240,7 +281,9 @@ $scope.share3 = function (event) {
     console.error('ERR', err);
     // err.status will contain the status code
   })
-})
+})*/
+
+/*
 
 .controller("FileCtrl", function($scope, $ionicLoading) {
  
@@ -300,4 +343,4 @@ $scope.share3 = function (event) {
     }
  
 });
-;;
+;;*/

@@ -8,11 +8,13 @@
 //Creamos la base de datos como una variable global para que se pueda acceder desde cualquier metodo y controlador
 //var db = null;
 
-angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB', 'ngCordova'])
+angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB', 'ngCordova', 'ngResource'])
 
 .run(function($ionicPlatform, ngFB, $cordovaSQLite) {
 
   ngFB.init({appId: '1431925717111021'});
+  
+  window.localStorage.setItem('serverIp', 'http://192.168.0.121:3000/api/v1/');
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -38,11 +40,21 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB', 'ngCordov
     controller: 'AppCtrl'
   })
 
-  .state('app.search', {
-    url: "/search",
+  .state('app.historial', {
+    url: "/historial",
+    views: {
+      'menuContent':{
+          templateUrl:"templates/historial.html",
+          controller: 'historialCtrl'
+      }
+    }
+  })
+
+  .state('app.favoritos', {
+    url: "/favoritos",
     views: {
       'menuContent': {
-        templateUrl: "templates/search.html"
+        templateUrl: "templates/favoritos.html"
       }
     }
   })
@@ -77,12 +89,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB', 'ngCordov
   }
 })
 
-  .state('app.historial', {
-  url: "/historial",
+  .state('app.acerca', {
+  url: "/acerca",
   views: {
       'menuContent': {
-          templateUrl: "templates/historial.html",
-          controller: 'HistorialCtrl'
+          templateUrl: "templates/acerca.html"
       }
   }
 })

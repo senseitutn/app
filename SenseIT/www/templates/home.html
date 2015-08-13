@@ -1,6 +1,14 @@
-<ion-view view-title="Home">
+<ion-view view-title="Home" side="center">
+	<ion-nav-buttons side="right">
+      <button class="button" src="img/lupa.png" ng-click="doSomething()">
+        Buscar
+      </button>
+      <button class="button" ng-click="doSomething()">
+        Ordenar
+      </button>
+   </ion-nav-buttons>
 	 <ion-content class="has-header">
-		<div class="list" ng-controller="HomeCtrl">
+		<div class="list" ng-controller="HomeCtrl" show-reorder="true">
 
 			<a class="item item-thumbnail-left" style="margin-left: -65px" href="#">
 				<iframe class="youtube-player" type="text/html" width="250px" height="150px" frameborder="0"
@@ -8,10 +16,11 @@
 				</iframe>
 				<h2>Grand Canyon</h2>
 				<p>Recorrido por el gran cañon</p>
-				<p>resp.data</p>
+				<p>{{titulo}}</p>
 
 				<button class="button button-positive" ng-click="share1()">
 					<i class="icon ion-share"></i>
+					Compartir
 				</button>	
 				<!--<p href="http://www.facebook.com/sharer.php?u=https://simplesharebuttons.com" target="_blank"
 					img src="https://simplesharebuttons.com/images/somacro/facebook.png" alt="Facebook" style="width:1%">
@@ -31,6 +40,7 @@
 				<p>Guerra de las galaxias</p>
 				<button class="button button-positive" ng-click="share2()">
 					<i class="icon ion-share"></i>
+					Compartir
 				</button>	
 			</a>
 
@@ -43,6 +53,7 @@
 				<p>Los vengadores: La batalla</p>
 				<button class="button button-positive" ng-click="share3()">
 					<i class="icon ion-share"></i>
+					Compartir
 				</button>	
 			</a>
 
