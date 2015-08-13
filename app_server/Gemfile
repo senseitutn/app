@@ -26,6 +26,16 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 #to use respond_with inside controllers
 gem 'responders', '~> 2.0'
 
+#this gem allows us to use has_secure_password into our models
+gem 'bcrypt', '~> 3.1.7'
+
+#gems that have been added to this particular project 
+gem "paperclip"
+
+gem 'paperclip-av-transcoder'
+
+gem 'koala'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

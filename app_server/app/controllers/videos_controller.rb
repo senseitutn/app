@@ -3,27 +3,51 @@ class VideosController < ApplicationController
 
 	def index
 		@videos = Video.all
-		respond_with @videos
 	end
 
 	def show
-		respond_with Video.find(params[:id])
+		@video = Video.find(params[:id])
+	end
+
+	def new
+		@video = Video.new
+	end
+
+	def edit
+		@video = Video.find(params[:id])
 	end
 
 	def create
-		respond_with Video.create(video_params)
+		@video = Video.create(video_params)
+
+		if @video.save
+			flash[:notice] = 'Se ha subido el video correctamente'
+			redirect_to @video
+		else
+			flash[:notice] = 'No se ha podido subir el video'
+			render "new"
+		end		
 	end
 
 	def update
-		respond_with Video.update(params[:id], video_params)
+		@video = Video.update(params[:id], video_params)
+
+		if @video.save
+			redirect_to @video
+		else
+			render 'edit'
+		end
 	end
 
 	def destroy
-		respond_with Video.destroy(params[:id])
+		@video = Video.find(params[:id])
+		@video.destroy
+
+		redirect_to videos_path
 	end
 
 	private
 		def video_params
-			params.require(:video).permit(:title,:url,:description,:duration,:uploaded_at)
+			params.require(:video).permit(:title,:url,:description,:duration,:uploaded_at,:video)
 		end
 end

@@ -5,12 +5,15 @@ Rails.application.routes.draw do
 
   resources :users
 
-  namespace :api, defaults: { format: 'json'} do
+ namespace :api, defaults: { format: 'json'} do
     namespace :v1 do
-      resources :videos
-      resources :users
+      resources :users do
+        resources :videos
+      end
     end
   end
+
+  get 'api/v1/users/get/:id_facebook', to: "api/v1/users#get_user"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

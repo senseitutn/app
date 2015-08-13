@@ -2,16 +2,16 @@
  
 <table>
   <tr>
-    <th>Titulo</th>
+    <th>Título</th>
     <th>Descripción</th>
-    <th>Duración</th>
+    <th>Video</th>
   </tr>
  
   <% @videos.each do |video| %>
     <tr>
-      <td><%= video.name %></td>
+      <td><%= video.title %></td>
       <td><%= video.description %></td>
-      <td><%= video.duration %></td>
+      <td><%= video_tag video.video.url %></td>
     </tr>
   <% end %>
 </table>

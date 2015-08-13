@@ -11,35 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150720121155) do
+ActiveRecord::Schema.define(version: 20150813032451) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string   "access_token"
     t.integer  "user_id"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
-  end
-
-  create_table "consumer_videos", force: :cascade do |t|
-    t.integer  "video_id"
-    t.integer  "consumer_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-  end
-
-  create_table "consumers", force: :cascade do |t|
-    t.string   "token_fb"
-    t.string   "image_url"
-    t.string   "mail_1"
-    t.string   "mail_2"
-    t.string   "mail_3"
-    t.string   "cel_1"
-    t.string   "cel_2"
-    t.date     "birthday"
-    t.string   "country"
-    t.string   "sex"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "favourites", force: :cascade do |t|
@@ -52,22 +30,56 @@ ActiveRecord::Schema.define(version: 20150720121155) do
 
   create_table "user_histories", force: :cascade do |t|
     t.integer  "video_id"
-    t.integer  "consumer_id"
+    t.integer  "user_id"
     t.datetime "last_reproduction"
     t.integer  "visits_count"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
   end
 
+  create_table "user_videos", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "video_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "user_videos", ["user_id"], name: "index_user_videos_on_user_id"
+  add_index "user_videos", ["video_id"], name: "index_user_videos_on_video_id"
+
+  create_table "userizations", force: :cascade do |t|
+    t.integer  "video_id"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "userizations", ["user_id"], name: "index_userizations_on_user_id"
+  add_index "userizations", ["video_id"], name: "index_userizations_on_video_id"
+
   create_table "users", force: :cascade do |t|
     t.string   "username"
-    t.string   "password"
     t.string   "name"
     t.string   "surname"
     t.integer  "failed_login_count"
     t.datetime "disabled_at"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.string   "mail_1"
+    t.string   "mail_2"
+    t.string   "mail_3"
+    t.string   "cel_1"
+    t.string   "cel_2"
+    t.date     "birthday"
+    t.string   "country"
+    t.string   "sex"
+    t.string   "password_digest"
+    t.string   "facebook_id"
+  end
+
+  create_table "users_videos", force: :cascade do |t|
+    t.integer "users_id"
+    t.integer "videos_id"
   end
 
   create_table "videos", force: :cascade do |t|
@@ -76,8 +88,12 @@ ActiveRecord::Schema.define(version: 20150720121155) do
     t.text     "description"
     t.string   "url_preview"
     t.datetime "uploaded_at"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.string   "video_file_name"
+    t.string   "video_content_type"
+    t.integer  "video_file_size"
+    t.datetime "video_updated_at"
   end
 
 end
