@@ -2,7 +2,7 @@ class VideosController < ApplicationController
 	respond_to :html
 
 	def index
-		@videos = Video.all
+		@user = User.find_by(:id => params[:user_id])
 	end
 
 	def show

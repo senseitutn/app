@@ -17,7 +17,6 @@ module Api
 				@user = User.new(:username => params[:name], :name => params[:first_name], :surname => params[:last_name], 
 					:facebook_id => params[:facebook_id])
 				@user.save
-				@access_token = ApiKey.create(:user_id => @user.id)
 			end
 
 			def update
@@ -30,6 +29,16 @@ module Api
 
 			def get_user
 				respond_with User.find_by(:facebook_id => params[:id_facebook])
+			end
+
+			def get_videos
+				@user = User.find_by(:facebook_id => params[:id_facebook])
+			end
+
+			#Get the user favourites
+			def favourites
+				@user = User.find_by(:facebook_id => params[:id_facebook])
+				@favourites = Favourite.where("user_id = #{@user.id}")
 			end
 
 			private 

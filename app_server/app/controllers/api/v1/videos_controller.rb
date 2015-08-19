@@ -5,9 +5,9 @@ module Api
 			respond_to :json
 
 			def index
-				respond_with Video.all
+				@user = User.find_by(params[:user_id])
 			end
-
+			
 			def show
 				respond_with Video.find(params[:id])
 			end

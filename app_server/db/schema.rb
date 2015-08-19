@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150813032451) do
+ActiveRecord::Schema.define(version: 20150819024132) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string   "access_token"
@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20150813032451) do
 
   create_table "favourites", force: :cascade do |t|
     t.integer  "video_id"
-    t.integer  "consumer_id"
+    t.integer  "user_id"
     t.datetime "favourited_at"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
@@ -36,26 +36,6 @@ ActiveRecord::Schema.define(version: 20150813032451) do
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
   end
-
-  create_table "user_videos", force: :cascade do |t|
-    t.integer  "user_id"
-    t.integer  "video_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "user_videos", ["user_id"], name: "index_user_videos_on_user_id"
-  add_index "user_videos", ["video_id"], name: "index_user_videos_on_video_id"
-
-  create_table "userizations", force: :cascade do |t|
-    t.integer  "video_id"
-    t.integer  "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "userizations", ["user_id"], name: "index_userizations_on_user_id"
-  add_index "userizations", ["video_id"], name: "index_userizations_on_video_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "username"
@@ -72,14 +52,14 @@ ActiveRecord::Schema.define(version: 20150813032451) do
     t.string   "cel_2"
     t.date     "birthday"
     t.string   "country"
-    t.string   "sex"
+    t.string   "gender"
     t.string   "password_digest"
     t.string   "facebook_id"
   end
 
-  create_table "users_videos", force: :cascade do |t|
-    t.integer "users_id"
-    t.integer "videos_id"
+  create_table "users_videos", id: false, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "video_id"
   end
 
   create_table "videos", force: :cascade do |t|
