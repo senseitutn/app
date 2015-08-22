@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'ngResource'])
+angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'ngResource', 'plugin'])
 
 .controller('AppCtrl', function($scope, $state, $ionicModal, localstorage, $timeout, ngFB, $ionicPlatform, $window, user) {
 
@@ -65,7 +65,7 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'ngResour
                             alert('Facebook error: ' + error.error_description);
                         });
                   
-                  
+                    
                     //mando al servidor el usuario para que lo cree 
                     var serverIp = window.localStorage.getItem('serverIp');
                     var newUser = new user();
@@ -97,9 +97,22 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'ngResour
   // $scope.sessions = Session.query();
 })
 
+.controller('testCtrl', function($scope, Video) {
+     $scope.reproducir = function(){
+
+      window.alertBack(userName, function(echoValue) {
+      alert(echoValue); 
+      });
+
+    };
+})
+
 .controller('VideoCtrl', function($scope, $stateParams, Video) {
     //Me conecto a la base y Pido el video con el id
     //$scope.session = Session.get({sessionId: $stateParams.sessionId});
+
+    
+  
 })
 
 .controller('historialCtrl', function($scope, $timeout, $cordovaFileTransfer, $resource){
@@ -125,7 +138,7 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'ngResour
 
 })
 
-.controller('HomeCtrl', function($scope, $stateParams, ngFB, $cordovaSocialSharing,  $resource, dbServices){
+.controller('HomeCtrl', function($scope, $stateParams, ngFB, $cordovaSocialSharing,  $resource, echo){
   /*
   // Trae todo el json y muestra solo el titulo
   var jsons = dbServices.query(function(){
@@ -133,7 +146,16 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'ngResour
     $scope.titulo = json.title;
   });
   */
-  
+  $scope.reproducir = function(){
+
+    //cordova.exec(function(winParam) {}, function(error) {}, "service","action", ["firstArgument", "secondArgument", 42,false]);
+    window.echo("echome", function(echoValue) {
+        alert(echoValue == "echome"); // should alert true.
+    });
+
+
+  };
+
   $scope.share1 = function(){
 
     $cordovaSocialSharing

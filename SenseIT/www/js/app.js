@@ -17,6 +17,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB', 'ngCordov
   window.localStorage.setItem('serverIp', 'http://192.168.0.121:3000/api/v1/');
 
   $ionicPlatform.ready(function() {
+
+
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -97,7 +99,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB', 'ngCordov
       }
   }
 })
-
 
 .state('app.video', {
     url: "/video/:videoId",

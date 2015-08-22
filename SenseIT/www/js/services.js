@@ -17,7 +17,6 @@ angular.module('starter.services', ['ngResource'])
   return $resource('serverIp' + 'users/new')
 })
 
-
 .factory('localstorage', ['$window', function($window) {
   return {
     set: function(key, value) {

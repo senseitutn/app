@@ -77,6 +77,12 @@
 	<feature name="File Transfer">
 		<param name="id" value="org.apache.cordova.file-transfer" />
 	</feature>
+	<feature name="AlertBack">
+    	<param name="android-package" value="com.oodles.plugin.AlertBack" />
+	</feature>
+	<feature name="Echo">
+    	<param name="android-package" value="org.apache.cordova.plugin.Echo" />
+	</feature>
 	<platform name="android">
 		<icon src="resources/android/icon/drawable-ldpi-icon.png"
 			density="ldpi" />
