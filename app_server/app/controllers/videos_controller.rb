@@ -18,14 +18,29 @@ class VideosController < ApplicationController
 	end
 
 	def create
-		@video = Video.create(video_params)
+		@video = Video.create(video_params) 
 
-		# seteo otros parametros (es muy sucio setearlo aca!!)
+		# seteo parametros del video
     	@video.url = @video.video.url
     	@video.uploaded_at = DateTime.now
 
-    	# TODO: crear un screenshot del video y asociarle la imagen
-    	@video.save!
+    	# TODO: este guardado es provisorio, hay que almacenarlo en un web service
+
+    	#guardo el video 
+    	if @video.save
+    		# creo el screenshot (preview, en nuestro caso) del video
+    		@movie = FFMPEG::Movie.new(@video.video.path)
+
+    		#en el nombre mismo de screenshot le pongo la ruta (asi me ahorro el paso de indicarsela explicitamente) 
+    		#  ejemplo: "/home/wizarmon/Documentos/mi_screenshot.jpg" 
+			@screenshot = @movie.screenshot("#{Rails.root}/screenshots/#{@video.title}_screenshot.jpg", 
+				seek_time: @movie.duration/2, resolution: '320x240')
+			# Asocio el screenshot al video
+			@image = Image.create(:video_id => @video.id, 
+				:image => File.new("#{Rails.root}/screenshots/#{@video.title}_screenshot.jpg","r"))
+			@image.url = @image.image.url
+			@image.save
+    	end 
 
 		if @video
 			flash[:notice] = 'Se ha subido el video correctamente'

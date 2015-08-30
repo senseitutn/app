@@ -19,3 +19,6 @@
 # Ignore all uploaded files with paperclip inside public directory
 /public/system/images/*
 /public/system/videos/*
+
+# Ignore all the screenshots files
+/screenshots/*
