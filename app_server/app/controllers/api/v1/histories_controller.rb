@@ -8,13 +8,17 @@ module Api
 			def get_by_user
 				# TODO: chequear esto
 				@user = User.find_by(:facebook_id => params[:id_facebook])
-				@histories = History.find_by(:user_id => @user.id)
+				if @user
+					@histories = History.where("user_id = #{@user.id}")
+				end
 			end
 
 			def get_by_video
 				# TODO: chequear esto
-				@user = User.find_by(:facebook_id => params[:id_facebook])
-				@histories = History.find_by(:user_id => @user.id)
+				@video = Video.find_by(:id => params[:video_id])
+				if @video
+					@histories = History.where("video_id = #{@video.id}")
+				end
 			end
 
 			def create

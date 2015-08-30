@@ -12,7 +12,7 @@ module Api
 			end
 
 			def get_all_with_video
-				@video = Video.find(params[:video_id])
+				@video = Video.find_by(:id => params[:video_id])
 				@favourites = Favourite.where("video_id = #{@video.id}")
 			end
 

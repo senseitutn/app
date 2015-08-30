@@ -33,5 +33,5 @@ user_list = [
 
 user_list.each do |user|
 	User.create( :username => user[0],:name => user[1], :surname => user[2], :mail_1 => user[3],
-			:sex => user[4], :facebook_id => user[5])
+			:gender => user[4], :facebook_id => user[5])
 end

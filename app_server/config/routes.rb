@@ -21,6 +21,10 @@ Rails.application.routes.draw do
 
   get 'api/v1/favourites/get-with-video/:video_id', to: "api/v1/favourites#get_all_with_video"
 
+  get 'api/v1/histories/get-by-user/:id_facebook', to: "api/v1/histories#get_by_user"
+
+  get 'api/v1/histories/get-by-video/:video_id', to: "api/v1/histories#get_by_video"
+
   post 'api/v1/histories', to: "api/v1/histories#create"
   
   post 'api/v1/favourites', to: "api/v1/favourites#create"
