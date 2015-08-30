@@ -59,10 +59,8 @@ module Api
 				@graph = Koala::Facebook::API.new(params[:token_fb])
 				@user = User.find_by(name: @graph.get_object("me").name)
 				if @user
-					# TODO: checkear armado de json
 					render json: @user.as_json(only: [@user_id, @user.api_key]) 
 				else
-					# TODO:crear usuario
 
 					# 1) se debe redirigir al metodo create de este mismo controller
 					# 2) una vez creado responder con el json

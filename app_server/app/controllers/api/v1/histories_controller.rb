@@ -6,7 +6,6 @@ module Api
 			respond_to :json
 
 			def get_by_user
-				# TODO: chequear esto
 				@user = User.find_by(:facebook_id => params[:id_facebook])
 				if @user
 					@histories = History.where("user_id = #{@user.id}")
@@ -14,7 +13,6 @@ module Api
 			end
 
 			def get_by_video
-				# TODO: chequear esto
 				@video = Video.find_by(:id => params[:video_id])
 				if @video
 					@histories = History.where("video_id = #{@video.id}")
@@ -22,7 +20,6 @@ module Api
 			end
 
 			def create
-				# TODO: chequear
 				@user = User.find_by(:facebook_id => params[:id_facebook])
 				if @user
 					@history = History.create(:user_id => @user.id, :video_id => params[:video_id],
