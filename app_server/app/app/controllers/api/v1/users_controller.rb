@@ -1,0 +1,83 @@
+module Api
+	module V1
+		class UsersController < ApplicationController
+			# before_filter :restrict_access, excepts: [:show, :create]
+			skip_before_filter  :verify_authenticity_token
+			respond_to :json
+
+			def index
+				respond_with User.all
+			end
+
+			def show
+				respond_with User.find(params[:id_facebook])
+			end
+
+			def create
+				@user = User.new(:username => params[:name], :name => params[:first_name], :surname => params[:last_name], 
+					:facebook_id => params[:facebook_id])
+				@user.save
+			end
+
+			def update
+				#respond_with User.update(params[:id], params[:videos])
+			end
+
+			def destroy
+				respond_with User.destroy(params[:id])
+			end
+
+			def get_user
+				respond_with User.find_by(:facebook_id => params[:id_facebook])
+			end
+
+			def get_videos
+				@user = User.find_by(:facebook_id => params[:id_facebook])
+			end
+
+			#Get the user favourites
+			def favourites
+				@user = User.find_by(:facebook_id => params[:id_facebook])
+				@favourites = Favourite.where("user_id = #{@user.id}")
+			end
+
+			private 
+			def user_params
+				params.require(:user).permit(:name, :first_name, :last_name, :email, :gender, :birthday)
+			end
+
+			def restrict_access
+				authenticate_or_request_with_http_token do |token, options|
+					ApiKey.exists?(access_token: token)
+				end
+			end
+
+=begin
+			#Esto no se va a usar
+
+			def handle_tokens
+				@graph = Koala::Facebook::API.new(params[:token_fb])
+				@user = User.find_by(name: @graph.get_object("me").name)
+				if @user
+					# TODO: checkear armado de json
+					render json: @user.as_json(only: [@user_id, @user.api_key]) 
+				else
+					# TODO:crear usuario
+
+					# 1) se debe redirigir al metodo create de este mismo controller
+					# 2) una vez creado responder con el json
+					@user = User.new
+					@user = User.create_from_graph(:graph => @graph, :user => @user)
+					if @user
+						@access_token = ApiKey.create(:user_id => @user.id)
+						respond_with @user
+					else
+						render :json => { :errors => @user.errors.as_json }, :status => 420
+					end
+				end
+			end
+=end
+
+		end
+	end
+end

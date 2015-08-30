@@ -1,0 +1,17 @@
+<h1>Listado de videos</h1>
+ 
+<table>
+  <tr>
+    <th>Título</th>
+    <th>Descripción</th>
+    <th>Video</th>
+  </tr>
+ 
+  <% @videos.each do |video| %>
+    <tr>
+      <td><%= video.title %></td>
+      <td><%= video.description %></td>
+      <td><%= video_tag video.video.url %></td>
+    </tr>
+  <% end %>
+</table>

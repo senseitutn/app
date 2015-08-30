@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150819024132) do
+ActiveRecord::Schema.define(version: 20150828233610) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string   "access_token"
@@ -27,6 +27,27 @@ ActiveRecord::Schema.define(version: 20150819024132) do
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
+
+  create_table "histories", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "video_id"
+    t.datetime "reproduced_at"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  create_table "images", force: :cascade do |t|
+    t.string   "url"
+    t.integer  "video_id"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
+  end
+
+  add_index "images", ["video_id"], name: "index_images_on_video_id"
 
   create_table "user_histories", force: :cascade do |t|
     t.integer  "video_id"

@@ -1,0 +1,23 @@
+<h1>Listado de Usuarios</h1>
+
+<table>
+  <tr>
+    <th>Username</th>
+    <th>Nombre</th>
+    <th>Apellido</th>
+    <th>Email</th>
+    <th>País</th>
+    <th>Sexo</th>
+  </tr>
+
+<% @consumers.each |consumer| do %>
+	<tr>
+      <td><%= consumer.username %></td>
+      <td><%= consumer.name %></td>
+      <td><%= consumer.surname %></td>
+      <td><%= consumer.mail_1 %></td>
+      <td><%= consumer.country %></td>
+      <td><%= consumer.sex %></td>
+    </tr>
+
+<% end %>
