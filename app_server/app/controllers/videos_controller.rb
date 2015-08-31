@@ -40,6 +40,10 @@ class VideosController < ApplicationController
 				:image => File.new("#{Rails.root}/screenshots/#{@video.title}_screenshot.jpg","r"))
 			@image.url = @image.image.url
 			@image.save
+
+			# seteo la preview del video
+			@video.url_preview = @image.url
+			@video.save
     	end 
 
 		if @video

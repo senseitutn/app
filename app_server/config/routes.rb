@@ -7,15 +7,19 @@ Rails.application.routes.draw do
 
  namespace :api, defaults: { format: 'json'} do
     namespace :v1 do
-      resources :users do
-        resources :videos
-      end
+      # resources :users do
+      #   resources :videos
+      resources :users
+      resources :videos
+      # end
     end
   end
 
   get 'api/v1/users/get/:id_facebook', to: "api/v1/users#get_user"
 
   get 'api/v1/users/get_videos/:id_facebook', to: "api/v1/users#get_videos"
+
+   get 'api/v1/videos/search/:text', to: "api/v1/videos#search_all"
 
   get 'api/v1/favourites/get-with-user/:id_facebook', to: "api/v1/favourites#get_all_with_user"
 

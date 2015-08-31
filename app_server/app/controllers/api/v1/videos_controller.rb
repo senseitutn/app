@@ -5,7 +5,7 @@ module Api
 			respond_to :json
 
 			def index
-				@user = User.find_by(params[:user_id])
+				respond_with Video.all
 			end
 			
 			def show
@@ -23,6 +23,11 @@ module Api
 
 			def destroy
 				respond_with Video.destroy(params[:id])
+			end
+
+			def search_all
+				@text = params[:text]
+				@videos = Video.where("title LIKE ? OR description LIKE ?", "%#{@text}%","%#{@text}%")
 			end
 
 			# Customs methods
