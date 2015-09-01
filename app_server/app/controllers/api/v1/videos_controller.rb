@@ -5,7 +5,7 @@ module Api
 			respond_to :json
 
 			def index
-				respond_with Video.all
+				@videos = Video.all
 			end
 			
 			def show
