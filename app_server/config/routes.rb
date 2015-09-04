@@ -36,9 +36,6 @@ Rails.application.routes.draw do
   #Este es el de prueba que anda, pero despues lo tengo que borrar
   get 'api/v1/users/favourites/:id_facebook', to: "api/v1/users#favourites"
 
-
-
-
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
