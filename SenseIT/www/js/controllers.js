@@ -17,7 +17,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
       if (token === null)
       {
-        //$scope.login();
+        $scope.login();
       }
   
     });
@@ -270,7 +270,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 })
 
 
-.controller('historialCtrl', function($scope,$http, $sce, $localstorage){
+.controller('historialCtrl', function($scope,$http, $sce, $localstorage, $window){
 
     //busco id usuario en localStorage
     var id_face = $localstorage.getObject('user').id;
@@ -279,15 +279,15 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
     var serverIp = window.localStorage.getItem('serverIp');
 
     $http.get(serverIp +'histories/get-by-user/'+id_face).success(function(data) {
-    $scope.historial = data;
-    console.log(data);
+      $scope.historial = data;
+      console.log(data);
 
-    if(data.message == "el usuario no tiene user histories asociadas")
-    {
-      alert(data.message);
-    }
-    else
-    {
+      if(data.message == "el usuario no tiene user histories asociadas")
+      {
+        alert(data.message);
+      }
+      else
+      {
 
       var len = $scope.historial.length;
       var j = 0;
@@ -336,6 +336,36 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
   
   $scope.close = function() {
       $scope.opened = undefined;
+  };
+
+  $scope.doRefresh = function() {
+
+    $http.get(serverIp +'histories/get-by-user/'+id_face)
+     .success(function(data) {
+             $scope.historial = data;
+              if(data.message == "el usuario no tiene user histories asociadas"){
+                alert(data.message);
+              }else{
+
+              var len = $scope.historial.length;
+              var j = 0;
+              $scope.videos_historial = [];
+              for(var i=0;i<len;i++){ 
+                var idvideo = $scope.historial[i].video_id; 
+                $http.get(serverIp +'videos/'+ idvideo).success(function(data) {
+                $scope.videos_historial[j] = data;   
+                var src = $scope.videos_historial[j].url;
+                $scope.videos_historial[j].url= $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
+                j++;
+                });
+              }
+
+            }
+     })
+     .finally(function() {
+       // Stop the ion-refresher from spinning
+       $scope.$broadcast('scroll.refreshComplete');
+     });
   };
 
  
@@ -453,9 +483,6 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       { 
         
         var idvideo = $scope.lista_favoritos[i].video_id; 
-
-
-
         $http.get(serverIp +'videos/'+ idvideo).success(function(data) {
         $scope.favoritos[j] = data;   
         var src = $scope.favoritos[j].url;
@@ -463,7 +490,6 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
         $scope.favoritos[j].url= $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
         j++;
         if(j == len){
-      
           console.log($scope.favoritos);
         }
         });
@@ -474,6 +500,30 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       alert('no se encontraron favoritos de este usuario');
       $state.go('app.home');
     });
+
+    $scope.doRefresh = function() {
+      $http.get(serverIp +'videos/'+ idvideo)
+       .success(function(data) {
+          $scope.lista_favoritos = data.data;
+          var len = $scope.lista_favoritos.length;
+          var j = 0;
+          $scope.favoritos = [];
+          for(var i=0;i<len;i++){ 
+            var idvideo = $scope.lista_favoritos[i].video_id; 
+            $http.get(serverIp +'videos/'+ idvideo).success(function(data) {
+            $scope.favoritos[j] = data;   
+            var src = $scope.favoritos[j].url;
+            $scope.favoritos[j].url= $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
+            j++;
+            });
+          }
+       })
+       .finally(function() {
+         // Stop the ion-refresher from spinning
+         $scope.$broadcast('scroll.refreshComplete');
+       });
+    };
+
 })
 
 
