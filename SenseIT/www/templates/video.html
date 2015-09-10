@@ -2,31 +2,28 @@
   <ion-content>
     <div class="list card">
       <div class="item">
-        <h3>{{session.time}}</h3>
-        <h2>{{session.title}}</h2>
-        <p>{{session.speaker}}</p>
+        <h3>{{video.title}}</h3>
+      </div>
+      <div> 
+          <div ng-bind-html="video.url_segura" side="center"></div>
+          <p show-data='' youtube="{{video.url_segura}}"></p>
+      </div>
+      <div class="item item-body">
+        <p>{{video.description}}</p>
       </div>
       <button class="button button-block button-positive" margin-top="200px" ng-click="reproducir()">
           Reproducir
       </button> 
-      <div class="item item-body">
-        <p>{{session.description}}</p>
-      </div>
+
       <div class="item tabs tabs-secondary tabs-icon-left">
-        <a class="tab-item">
-          <i class="icon ion-thumbsup"></i>
-          Like
-        </a>
-        <a class="tab-item">
-          <i class="icon ion-chatbox"></i>
-          Comment
-        </a>
-       <!-- <a class="tab-item" ng-click="share()">
-          <i class="icon ion-share"></i>
-          Share
-        </a>-->
+          <a class="tab-item" ng-click="share()">
+          <i class="icon ion-share button-positive"></i>
+          Compartir
+          </a>
       </div>
+      <button class="button button-block ion-star button-energized" ng-click="favorito()">Favorito</button>
+    </div>
+    <button class="button button-block button-positive" ng-click="download()">Descargar</button>
     </div>
   </ion-content>
 </ion-view>
-

@@ -1,23 +1,37 @@
 angular.module('starter.services', ['ngResource'])
 
 .factory('login', function ($resource) {
-
-    //return $resource('http://localhost:5000/sessions/:sessionId');
     return $resource('http://localhost:5000/login')
 })
 
 .factory('dbServices', function ($resource) {
-    return $resource('http://192.168.1.102:3000/api/v1/videos')
-    //cuando esten implementadas las funciones en el server va esta
-    //return $resource('http://192.168.1.102:3000/api/v1')
+    var serverIp = window.localStorage.getItem('serverIp');
+    return $resource(serverIp + 'videos')
+   
 })
 
-.factory('user', function($resource){
+.factory('User', function($resource){
   var serverIp = window.localStorage.getItem('serverIp');
-  return $resource('serverIp' + 'users/new')
+  return $resource(serverIp + 'users')
+
 })
 
-.factory('localstorage', ['$window', function($window) {
+.factory('Favorite', function($resource){
+  var serverIp = window.localStorage.getItem('serverIp');
+  return $resource(serverIp + 'favourites')
+
+})
+
+.factory('Video', function($resource){
+  var serverIp = window.localStorage.getItem('serverIp');
+  return 1;
+})
+.factory('History', function($resource){
+  var serverIp = window.localStorage.getItem('serverIp');
+  return $resource(serverIp + 'histories')
+})
+
+.factory('$localstorage', ['$window', function($window) {
   return {
     set: function(key, value) {
       $window.localStorage[key] = value;

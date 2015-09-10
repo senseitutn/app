@@ -1,8 +1,23 @@
-<ion-view view-title="videos">
-  <ion-content>
-    <ion-list>
-      <ion-item ng-repeat="session in sessions"
-                href="#/app/sessions/{{session.id}}">{{session.title}}</ion-item>
-    </ion-list>
+
+<ion-view view-title="Mis Videos" side="center">
+  <ion-content class="has-header">
+    <div class="list" ng-controller="VideosCtrl" show-reoder="true">     
+
+        <ion-item class="item item=thumbnail-left" ng-repeat="video in videos">
+          <div ng-bind-html="video.url_preview"></div>
+          <h3 ng-click="open(video)">{{video.title}}</h3>
+          <p show-data='' youtube="{{video.url_preview}}"></p>
+          <p>{{video.description}}</p>
+        </ion-item>  
+
+        <ng-switch on="anyItemOpen()">
+          <div ng-switch-when="true">
+            <div ng-controller="VideoCtrl">
+               {{opened.title}}: overlay: tweet, share, pin
+            </div>  
+           <a ng-click="close()">close</a>         
+          </div>
+        </ng-switch>  
+
   </ion-content>
-</ion-view>
+</ion-view> 

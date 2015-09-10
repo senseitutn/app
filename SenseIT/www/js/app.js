@@ -8,13 +8,11 @@
 //Creamos la base de datos como una variable global para que se pueda acceder desde cualquier metodo y controlador
 //var db = null;
 
-angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB', 'ngCordova', 'ngResource'])
+angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ngResource'])
 
-.run(function($ionicPlatform, ngFB, $cordovaSQLite) {
-
-  ngFB.init({appId: '1431925717111021'});
+.run(function($ionicPlatform) {
   
-  window.localStorage.setItem('serverIp', 'http://192.168.0.121:3000/api/v1/');
+  window.localStorage.setItem('serverIp', 'http://192.168.1.128:3000/api/v1/');
 
   $ionicPlatform.ready(function() {
 
@@ -32,7 +30,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB', 'ngCordov
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+
+  //esto es para el problema de CORS
+  $httpProvider.defaults.useXDomain = true;
+  $httpProvider.defaults.withCredentials = true;
+  delete $httpProvider.defaults.headers.common["X-Requested-With"];
+  $httpProvider.defaults.headers.common["Accept"] = "application/json";
+  $httpProvider.defaults.headers.common["Content-Type"] = "application/json";
+
   $stateProvider
 
   .state('app', {
@@ -56,7 +62,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB', 'ngCordov
     url: "/favoritos",
     views: {
       'menuContent': {
-        templateUrl: "templates/favoritos.html"
+        templateUrl: "templates/favoritos.html",
+        controller: "FavoritosCtrl"
       }
     }
   })
@@ -67,12 +74,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB', 'ngCordov
       'menuContent': {
         templateUrl: "templates/home.html",
         controller: 'HomeCtrl'
-      }
-    }
+      }}
   })
 
   .state('app.profile', {
-    url: "/profile",
+    url: "/perfil",
     views: {
         'menuContent': {
             templateUrl: "templates/profile.html",
@@ -101,12 +107,24 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngOpenFB', 'ngCordov
 })
 
 .state('app.video', {
-    url: "/video/:videoId",
+    url: "/video/:id",
     views: {
         'menuContent': {
           templateUrl: "templates/video.html",
-          controller: 'videoCtrl'
-      }
+          controller: 'VideoCtrl'
+      },
+    params: ['id']
+    }
+})
+
+.state('app.busqueda', {
+    url: "/busqueda?videos",
+    views: {
+        'menuContent': {
+          templateUrl: "templates/busqueda.html",
+          controller: 'BusquedaCtrl'
+      },
+    params: ['videos']
     }
 });;
   // if none of the above states are matched, use this as the fallback

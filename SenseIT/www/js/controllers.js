@@ -1,9 +1,9 @@
-angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'ngResource', 'plugin'])
+angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin', 'ngRoute'])
 
-.controller('AppCtrl', function($scope, $state, $ionicModal, localstorage, $timeout, ngFB, $ionicPlatform, $window, user) {
+.controller('AppCtrl', function($scope, $state, $ionicModal, $localstorage, $cordovaOauth, $http, $window, User) {
 
   // Form data for the login modal
-  $scope.loginData = {};
+  $scope.profileData = null;
  
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -12,20 +12,16 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'ngResour
   }).then(function(modal) {
     $scope.modal = modal;
   
-    $ionicPlatform.ready(function() {  
-      
+    
       var token = window.localStorage.getItem('TokenResponse');
-      
+
       if (token === null)
       {
-        $scope.login();
+        //$scope.login();
       }
-      
-      });
-      
+  
     });
-      
- 
+
   // Triggered in the login modal to close it
   $scope.closeLogin = function() {
     $scope.modal.hide();
@@ -36,116 +32,395 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'ngResour
     $scope.modal.show();
   };
 
-  $scope.fbLogin = function () {
-    ngFB.login({scope: 'email,read_stream,publish_actions'}).then(
-        function (response) {
-            if (response.status === 'connected') {
-                console.log('Facebook login succeeded');
-     
-                window.localStorage.setItem('TokenResponse', response.authResponse.accessToken);
-                ngFB.api({
-                        path: '/me',
-                        params: {access_token: window.localStorage.TokenResponse, fields: 'id,name,locale,email,first_name,last_name,birthday'}
-                        }).then(
-                        function (user) {                          
-                            localstorage.setObject('user', {
-                            id: user.id,
-                            name: user.name,
-                            city: user.locale,
-                            first_name: user.first_name,
-                            last_name: user.last_name,
-                            email: user.email,
-                            birthday: user.birthday
-                            });
+  $scope.fbLogin = function() {
 
-                          },
+   $cordovaOauth.facebook("519491304866168", ["email", "user_website", "user_location", "user_relationships"]).then(function(result) {
+       
+        alert("Login satisfactorio");
 
-                        
-                        function (error) {
-                            alert('Facebook error: ' + error.error_description);
-                        });
-                  
-                    
-                    //mando al servidor el usuario para que lo cree 
-                    var serverIp = window.localStorage.getItem('serverIp');
-                    var newUser = new user();
-                    var fbUser = window.localStorage.getItem('user');
-                    newUser.id = fbUser.id;
-                    newUser.name = fbUser.name;
-                    newUser.first_name = fbUser.first_name;
-                    newUser.last_name = fbUser.last_name;
-                    newUser.email = fbUser.email;
-                    newUser.birthday = fbUser.birthday;
-                    
-                    url.save(newUser, function(){});
-                    
-                  
-                  
-                
-                $scope.closeLogin();
-            } else {
-                alert('Facebook login failed');
-            }
+        window.localStorage.setItem('TokenResponse', result.access_token);
+
+        $http.get("https://graph.facebook.com/v2.2/me", { 
+            params: {
+                    access_token: result.access_token, 
+                    fields: "id,name,gender,location,picture, email, first_name, last_name",
+                    format: "json"
+           }
+        })
+       .success(function(result) {
+
+             $localstorage.setObject('user', {
+              id: result.id,
+              name: result.name,
+              first_name: result.first_name,
+              last_name: result.last_name,
+              email: result.email
+              });
+
+             //mando al servidor el usuario para que lo cree 
+              var newUser = new User();
+             
+              newUser.name = result.name;
+              newUser.first_name = result.first_name;
+              newUser.last_name = result.last_name;
+              newUser.email = result.email;
+              newUser.facebook_id = result.id;
+
+              var dbResult = User.save(newUser, function(){
+                console.log('se guardo el usuario: '+ newUser.name);
+                //alert('se guardo el usuario: '+ newUser.name);
+              });
+              console.log(dbResult);
+
+        })
+       .error( function(error) {
+              alert("Error al pedir datos del usuario ");
+
         });
-};
+
+        $scope.modal.hide();
+        $state.go('app.home');
+    }, function(error) {
+        alert("There was a problem signing in!  See the console for logs"+error);
+
+        console.log(error);
+    });
+
+}})
+
+.controller('VideosCtrl', function($scope, $sce, $state, $http, $localstorage) {
+
+  var id_face = $localstorage.getObject('user').id;
+
+  //var id_face = '123198231';
+  var serverIp = window.localStorage.getItem('serverIp');
+
+  $http.get(serverIp +'users/get_videos/'+id_face).
+    then(function(data) {
+      // this callback will be called asynchronously
+      // when the response is available
+      $scope.videos = data.data.videos;
+      var len = $scope.videos.length;
+
+      for(var i=0;i<len;i++)
+      { 
+        var src= $scope.videos[i].url_preview; 
+
+        //var src = 'https://www.youtube.com/embed/h3LeVGOBjSg'
+
+        $scope.videos[i].url_preview= $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
+
+      }
+
+    }, function(response) {
+      alert('no se encontraron videos de este usuario');
+      $state.go('app.home');
+    });
+
+  $scope.open = function(item){
+        /*if ($scope.isOpen(item)){
+            $scope.opened = undefined;
+        } else {
+            $scope.opened = item;
+        }      */  
+       $state.go('app.video', { id: item.id});
+    };
+    
+  $scope.isOpen = function(item){
+      return $scope.opened === item;
+  };
+  
+  $scope.anyItemOpen = function() {
+      return $scope.opened !== undefined;
+  };
+  
+  $scope.close = function() {
+      $scope.opened = undefined;
+  };
   
 })
 
+.controller('VideoCtrl', function($scope, $cordovaSocialSharing, $cordovaFile, $localstorage, $stateParams, $http, $sce, History, Favorite,$timeout) {
+    
+   var id_face = $localstorage.getObject('user').id;
 
-.controller('VideosCtrl', function($scope, Video) {
-  //Me conecto a la BD
-  // $scope.sessions = Session.query();
-})
+    //var id_face='123198231';
 
-.controller('testCtrl', function($scope, Video) {
-     $scope.reproducir = function(){
+    var serverIp = window.localStorage.getItem('serverIp');
 
-      window.alertBack(userName, function(echoValue) {
-      alert(echoValue); 
+   /* $scope.download = function() {
+      var url = "http://your_ip_address/images/my.jpg";
+      var url = "http://animalia-life.com/data_images/dog/dog1.jpg";
+      var filename = url.split("/").pop();
+      alert(filename);
+      var targetPath = cordova.file.dataDirectory + filename;
+      alert("target path: "+targetPath);
+      var trustHosts = true;
+      var options = {};
+      alert("cordova file dataDirectory "+cordova.file.dataDirectory);
+      $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
+        .then(function(result) {
+          // Success!
+          alert("Resultado del file transfer "+ JSON.stringify(result));
+        }, function(error) {
+          // Error
+          alert("Error de file transfer "+JSON.stringify(error));
+        }, function (progress) {
+          $timeout(function () {
+            $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+          })
+        });
+   };*/
+
+    
+
+    $scope.download = function($cordovaFile){
+
+    var url = "http://cdn.wall-pix.net/albums/art-space/00030109.jpg";
+    var targetPath = cordova.file.applicationStorageDirectory + "testImage.png";
+    //var targetPath = "/data/data/testImage.png";
+    var trustHosts = true
+    var options = {};
+    alert("target path: "+ targetPath);
+       $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
+      .then(function(result) {
+        // Success!
+        alert("success: "+ result);
+      }, function(err) {
+        // Error
+        alert( "error: "+err);
+      }, function (progress) {
+        $timeout(function () {
+          $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+          alert( "$scope.downloadProgress");
+        })
+      });
+
+
+    };
+
+    $http.get(serverIp +'videos/'+ $stateParams.id).success(function(data) {
+            $scope.video = data;
+            $scope.video.url_segura= $sce.trustAsHtml('<iframe width="250px" height="150px" side="center" src="'+$scope.video.url+'" frameborder="0" allowfullscreen></iframe>');
+            
+        });
+    
+
+    $scope.share= function(){
+
+      $cordovaSocialSharing
+      .shareViaFacebook("Mira este video en 360! Disfrutalo en realidad virtual con SenseIT", null,$scope.video.url)
+      .then(function(result){
+        alert('El video se compartio en Facebook');
+      }, function(err){
+        alert('Error al compartir el video en Facebook');
+      });
+    };
+
+    $scope.reproducir = function(){
+
+      var userHistory = new History();
+
+      userHistory.id_facebook = id_face;
+      userHistory.video_id = $scope.video.id;
+
+
+      var dbResult = History.save(userHistory, function(){
+        console.log('se guardo el historial con el resultado: ' + dbResult);
       });
 
     };
-})
 
-.controller('VideoCtrl', function($scope, $stateParams, Video) {
-    //Me conecto a la base y Pido el video con el id
-    //$scope.session = Session.get({sessionId: $stateParams.sessionId});
+    $scope.favorito = function(){
+      var favorito = new Favorite();
 
-    
+      favorito.id_facebook = id_face;
+      favorito.video_id = $scope.video.id;
+
+      var result = Favorite.save(favorito, function(){
+
+        console.log(result.message);
+
+      });
+
+    };
+
   
 })
 
-.controller('historialCtrl', function($scope, $timeout, $cordovaFileTransfer, $resource){
+.controller('BusquedaCtrl', function($scope, $stateParams, $sce){
 
-    //busco id usuario en localStorage
-    //var idUsuario = window.localStorage.getItem('user').id;
+  console.log('llegamos al controlador de busqueda');
+  var videos = angular.fromJson($stateParams.videos);
 
-    //pido ultimos 10 videos vistos por el usuario con el id
-   // var serverIp = window.localStorage.getItem('serverIp');
-   // var url = $resource(serverIp + 'users/:id/histories');
-   //$scope.historial = url.get({ id: idUsuario}, function(){});
-   $scope.historial = '{"historial": [ {"idVideo": "132", "nombre": "Star Wars", "Descripcion": "La guerra de las galaxias", "1erFrame": "api/v1/132/1erFrame" }, {"idVideo": "133", "nombre": "Grand Canyon", "Descripcion": "Recorrido por el gran canon", "1erFrame": "api/v1/132/1erFrame" }] } ';
+  var len = videos.length;
 
-    //hago un ng-repeat en el html
-
-    //recorro el json y saco las URL
+  for(var i=0;i< len;i++)
+  { 
+    var src= videos[i].url; 
 
 
-    //descargo en localStorage cada primera imagen para mostrar el preview
+    videos[i].url = $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
+    
 
-    //si clickea en un video termino de descargar todo el resto de los frames
+  }
 
+  $scope.videos = videos;
 
 })
 
-.controller('HomeCtrl', function($scope, $stateParams, ngFB, $cordovaSocialSharing,  $resource, echo){
-  /*
-  // Trae todo el json y muestra solo el titulo
-  var jsons = dbServices.query(function(){
-    var  json = jsons[0];
-    $scope.titulo = json.title;
-  });
-  */
+
+.controller('historialCtrl', function($scope,$http, $sce, $localstorage){
+
+    //busco id usuario en localStorage
+    var id_face = $localstorage.getObject('user').id;
+
+    //var id_face = '123198231';
+    var serverIp = window.localStorage.getItem('serverIp');
+
+    $http.get(serverIp +'histories/get-by-user/'+id_face).success(function(data) {
+    $scope.historial = data;
+    console.log(data);
+
+    if(data.message == "el usuario no tiene user histories asociadas")
+    {
+      alert(data.message);
+    }
+    else
+    {
+
+      var len = $scope.historial.length;
+      var j = 0;
+
+      $scope.videos_historial = [];
+
+      for(var i=0;i<len;i++)
+      { 
+        
+        var idvideo = $scope.historial[i].video_id; 
+
+
+
+        $http.get(serverIp +'videos/'+ idvideo).success(function(data) {
+        $scope.videos_historial[j] = data;   
+        var src = $scope.videos_historial[j].url;
+
+        $scope.videos_historial[j].url= $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
+        j++;
+        if(j == len){
+      
+          console.log($scope.videos_historial);
+        }
+        });
+
+      }
+
+    }
+
+            
+});
+   
+
+  $scope.open = function(item){
+  
+       $state.go('app.video', { id: item.id});
+    };
+    
+  $scope.isOpen = function(item){
+      return $scope.opened === item;
+  };
+  
+  $scope.anyItemOpen = function() {
+      return $scope.opened !== undefined;
+  };
+  
+  $scope.close = function() {
+      $scope.opened = undefined;
+  };
+
+ 
+})
+
+.controller('HomeCtrl', function($scope, $stateParams, $sce, $state, $http, $ionicModal, echo){
+
+  var serverIp = window.localStorage.getItem('serverIp');
+
+  if($scope.videos == null){
+    //hacer query y pedir toodos los videos
+     $http.get(serverIp +'videos').success(function(data) {
+        $scope.videos = data.videos;
+        var len = $scope.videos.length;
+
+        for(var i=0;i< len;i++)
+        { 
+          var src= $scope.videos[i].url; 
+
+          $scope.videos[i].url = $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
+        }
+
+
+
+        });
+
+
+  };
+
+
+
+
+  $scope.open = function(item){
+
+       $state.go('app.video', { id: item.id});
+    };
+    
+  $scope.isOpen = function(item){
+      return $scope.opened === item;
+  };
+  
+  $scope.anyItemOpen = function() {
+      return $scope.opened !== undefined;
+  };
+  
+  $scope.close = function() {
+      $scope.opened = undefined;
+  };
+
+  $scope.buscar = function(){
+
+          // Create the login modal that we will use later
+      $ionicModal.fromTemplateUrl('templates/buscar.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+      }).then(function(modal) {
+        $scope.modal = modal;
+        $scope.modal.show();
+ 
+        });
+
+  };
+
+  $scope.results = [];
+  $scope.findValue = function(enteredValue) {     
+      
+      $http.get(serverIp +'videos/search/'+enteredValue).success(function(data) {
+
+        if(data.message == "no hay resultados para "+ enteredValue)
+        {
+          alert('No hay resultados para '+enteredValue);
+        }
+        else
+        {
+
+         $scope.modal.hide();
+         var json = angular.toJson(data.videos, false);
+         $state.go('app.busqueda', { videos: json});
+        }
+
+      });
+    
+  };
+
+
   $scope.reproducir = function(){
 
     //cordova.exec(function(winParam) {}, function(error) {}, "service","action", ["firstArgument", "secondArgument", 42,false]);
@@ -156,114 +431,55 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'ngResour
 
   };
 
-  $scope.share1 = function(){
-
-    $cordovaSocialSharing
-    .shareViaFacebook("Mira este video en 360! Disfrutalo en realidad virtual con SenseIT", null,"https://www.youtube.com/watch?v=WKAgKlnfkDA" )
-    .then(function(result){
-      alert('El video se compartio en Facebook');
-    }, function(err){
-      alert('Error al compartir el video en Facebook');
-    });
-  };
-  /*$scope.share1 = function (event) {
-
-   var videoUrl = "https://www.youtube.com/watch?WKAgKlnfkDA "; 
-
-   ngFB.api({
-        method: 'POST',
-        path: '/me/feed',
-        params: {
-            
-            message: videoUrl + " Mirá este video en 360 usá SenseIT para verlo en realidad virtual!"
-
-        }
-    }).then(
-        function () {
-            alert('El video fue compartido en Facebook');
-        },
-        function () {
-            alert('Ocurrió un error al compartir el video en Facebook');
-        });
-};*/
-
-$scope.share2 = function (event) {
-
-    var videoUrl = "https://www.youtube.com/watch?v=6uG9vtckp1U";
-
-    $cordovaSocialSharing
-    .shareViaFacebook("Mira este video en 360! Disfrutalo en realidad virtual con SenseIT", null,videoUrl)
-    .then(function(result){
-      alert('El video se compartio en Facebook');
-    }, function(err){
-      alert('Error al compartir el video en Facebook');
-    });
-};
-
-
-$scope.share3 = function (event) {
-
-    var videoUrl = "https://www.youtube.com/watch?v=LdTm7Vpape0";
-
-   $cordovaSocialSharing
-    .shareViaFacebook("Mira este video en 360! Disfrutalo en realidad virtual con SenseIT", null,videoUrl)
-    .then(function(result){
-      //alert('El video se compartio en Facebook');
-      $ionicPopup.show({
-        template: "<style>.popup { width: 500px} </style><p>Video compartido en Facebook</p>",
-        title: 'Compartir',
-        scope: $scope,
-        buttons: [
-          {text: 'Ok'},
-          {
-            text: '<b>OK</b>',
-            type: 'button-positive',
-            OnTap: function(){console.log('Se compartio video en facebook')}
-          }
-        ]
-      });
-    }, function(err){
-      alert('Error al compartir el video en Facebook');
-    });
-};
-
-
 })
 
-.controller('ProfileCtrl', function ($scope, $state, ngFB, localstorage, $ionicModal) {
+.controller('FavoritosCtrl', function ($scope, $state, $localstorage, $http, $sce) {
 
-  $scope.user = localstorage.getObject('user');
-  $scope.fbLogin = function () {
-  ngFB.login({scope: 'email,read_stream,publish_actions'}).then(
-      function (response) {
-          if (response.status === 'connected') {
-              console.log('Facebook login succeeded');
-   
-              window.localStorage.setItem('TokenResponse', response.authResponse.accessToken);
-              ngFB.api({
-                      path: '/me',
-                      params: {access_token: window.localStorage.TokenResponse, fields: 'id,name'}
-                      }).then(
-                      function (user) {                          
-                          localstorage.setObject('user', {
-                          name: user.name,
-                          id: user.id,
-                          city: user.city
-                          });
+  var id_face = $localstorage.getObject('user').id;
+  var serverIp = window.localStorage.getItem('serverIp');
 
-                        },
+    $http.get(serverIp +'users/favourites/'+id_face).
+    then(function(data) {
+      // this callback will be called asynchronously
+      // when the response is available
+      $scope.lista_favoritos = data.data;
+      var len = $scope.lista_favoritos.length;
 
-                      
-                      function (error) {
-                          alert('Facebook error: ' + error.error_description);
-                      });
-               
-              $scope.closeLogin();
-          } else {
-              alert('Facebook login failed');
-          }
-      });
-  };
+      var j = 0;
+
+      $scope.favoritos = [];
+
+      for(var i=0;i<len;i++)
+      { 
+        
+        var idvideo = $scope.lista_favoritos[i].video_id; 
+
+
+
+        $http.get(serverIp +'videos/'+ idvideo).success(function(data) {
+        $scope.favoritos[j] = data;   
+        var src = $scope.favoritos[j].url;
+
+        $scope.favoritos[j].url= $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
+        j++;
+        if(j == len){
+      
+          console.log($scope.favoritos);
+        }
+        });
+
+      }
+
+    }, function(response) {
+      alert('no se encontraron favoritos de este usuario');
+      $state.go('app.home');
+    });
+})
+
+
+.controller('ProfileCtrl', function ($scope, $state, $localstorage, $ionicModal) {
+  
+  $scope.user = $localstorage.getObject('user');
 
   // Triggered in the login modal to close it
   $scope.closeLogin = function() {
@@ -271,9 +487,9 @@ $scope.share3 = function (event) {
   };
 
   $scope.fbLogout = function() {
-    ngFB.logout();
+  
     //delete local storage information
-    localstorage.deleteObject('user');
+    $localstorage.deleteObject('user');
     //delete scope user
     $scope.user = null;
     //show login modal again
@@ -286,83 +502,10 @@ $scope.share3 = function (event) {
         animation: 'slide-in-up'
       }).then(function(modal) {
         $scope.modal = modal;
-        $state.go('app.home');
+        //$state.go('app.home');
         $scope.modal.show();
 
     }) ;
 
-
   }
 })
-
-/*.controller('MessagePostCtrl', function($scope, $http) {
-
-    $http.get('http://echo.jsontest.com/conditions/frightful').then(function(resp) {
-    $scope.conditions = resp.data.conditions;
-  }, function(err) {
-    console.error('ERR', err);
-    // err.status will contain the status code
-  })
-})*/
-
-/*
-
-.controller("FileCtrl", function($scope, $ionicLoading) {
- 
-    $scope.download = function() {
-      $ionicLoading.show({
-      template: 'Loading...'
-    });
-    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {
-        fs.root.getDirectory(
-            "ExampleProject",
-            {
-                create: false
-            },
-            function(dirEntry) {
-                dirEntry.getFile(
-                    "test.mp4", 
-                    {
-                        create: false, 
-                        exclusive: false
-                    }, 
-                    function gotFileEntry(fe) {
-                        var p = fe.toURL();
-                        fe.remove();
-                        ft = new FileTransfer();
-                        ft.download(
-                          encodeURL("https://www.youtube.com/watch?v=WKAgKlnfkDA"),
-                          p,
-                          function(entry){
-                            $ionicLoading.hide();
-                            $scope.vdoFile = entry.toURL();
-                          },
-                          function(error){
-                            $ionicLoading.hide();
-                            console.log("download failed");
-                          },
-                          false,
-                          null
-                        );
-                    }, 
-                    function(error) {
-                        $ionicLoading.hide();
-                        console.log("Error getting file");
-                    }
-                );
-            }
-        );
-    },
-    function() {
-        $ionicLoading.hide();
-        console.log("Error requesting filesystem");
-    });
- 
-    }
- 
-    $scope.load = function() {
-    
-    }
- 
-});
-;;*/
