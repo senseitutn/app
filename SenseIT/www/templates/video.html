@@ -2,11 +2,11 @@
   <ion-content>
     <div class="list card">
       <div class="item">
-        <h3>{{video.title}}</h3>
+        <h2><b>{{video.title}}</b></h2>
       </div>
       <div> 
-          <div ng-bind-html="video.url_segura" side="center"></div>
-          <p show-data='' youtube="{{video.url_segura}}"></p>
+          <div ng-bind-html="video.url_segura"></div>
+          <p show-data=''youtube="{{video.url_segura}}"></p>
       </div>
       <div class="item item-body">
         <p>{{video.description}}</p>
@@ -23,7 +23,6 @@
       </div>
       <button class="button button-block ion-star button-energized" ng-click="favorito()">Favorito</button>
     </div>
-    <button class="button button-block button-positive" ng-click="download()">Descargar</button>
     </div>
   </ion-content>
 </ion-view>

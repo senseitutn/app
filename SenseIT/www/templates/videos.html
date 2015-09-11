@@ -1,14 +1,15 @@
 
-<ion-view view-title="Mis Videos" side="center">
+<ion-view view-title="Mis Videos">
   <ion-content class="has-header">
     <ion-refresher
       pulling-text="Pull to refresh..."
       on-refresh="doRefresh()">
     </ion-refresher>
-    
+    <button class="button button-block button-positive" ng-click="download()">Descargar desde Youtube</button>
+    <button class="button button-block button-positive" ng-click="upload()">Subir Video</button>
     <div class="list" ng-controller="VideosCtrl" show-reoder="true">     
-
-        <ion-item class="item item=thumbnail-left" ng-repeat="video in videos">
+ 
+        <ion-item class="item item=thumbnail-left center" ng-repeat="video in videos">
           <div ng-bind-html="video.url_preview"></div>
           <h3 ng-click="open(video)">{{video.title}}</h3>
           <p show-data='' youtube="{{video.url_preview}}"></p>

@@ -1,9 +1,9 @@
 
-<ion-view view-title="Resultados" side="center">
+<ion-view view-title="Resultados">
   <ion-content class="has-header">
     <div class="list" show-reoder="true">     
 
-        <ion-item class="item item=thumbnail-left" href="#" ng-repeat="video in videos track by $index">
+        <ion-item class="item item=thumbnail-left center" ng-repeat="video in videos track by $index">
 
           <div ng-bind-html="video.url"></div>
           <h3 ng-click="open(video)">{{video.title}}</h3>

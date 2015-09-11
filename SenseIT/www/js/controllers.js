@@ -88,7 +88,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
 }})
 
-.controller('VideosCtrl', function($scope, $sce, $state, $http, $localstorage) {
+.controller('VideosCtrl', function($scope, $sce, $state, $http, $localstorage, $ionicModal) {
 
   var id_face = $localstorage.getObject('user').id;
 
@@ -137,71 +137,39 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
   $scope.close = function() {
       $scope.opened = undefined;
   };
+
+  $scope.download = function(){
+
+      $ionicModal.fromTemplateUrl('templates/descargar.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+      }).then(function(modal) {
+        $scope.modal = modal;
+        $scope.modal.show();
+ 
+        });
+  };
+
+  $scope.descargarVideo = function(enteredValue){
+
+    //hacer el get con el link en enteredValue (NO SE CUAL ES LA URL DEL SERVER PARA ESO)
+    //agregarlo a mis videos
+  };
+
   
 })
 
 .controller('VideoCtrl', function($scope, $cordovaSocialSharing, $cordovaFile, $localstorage, $stateParams, $http, $sce, History, Favorite,$timeout) {
     
-   var id_face = $localstorage.getObject('user').id;
-
-    //var id_face='123198231';
+    var id_face = $localstorage.getObject('user').id;
+    //Mi usuario de face
+    //var id_face='10154179806703835';
 
     var serverIp = window.localStorage.getItem('serverIp');
 
-   /* $scope.download = function() {
-      var url = "http://your_ip_address/images/my.jpg";
-      var url = "http://animalia-life.com/data_images/dog/dog1.jpg";
-      var filename = url.split("/").pop();
-      alert(filename);
-      var targetPath = cordova.file.dataDirectory + filename;
-      alert("target path: "+targetPath);
-      var trustHosts = true;
-      var options = {};
-      alert("cordova file dataDirectory "+cordova.file.dataDirectory);
-      $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-        .then(function(result) {
-          // Success!
-          alert("Resultado del file transfer "+ JSON.stringify(result));
-        }, function(error) {
-          // Error
-          alert("Error de file transfer "+JSON.stringify(error));
-        }, function (progress) {
-          $timeout(function () {
-            $scope.downloadProgress = (progress.loaded / progress.total) * 100;
-          })
-        });
-   };*/
-
-    
-
-    $scope.download = function($cordovaFile){
-
-    var url = "http://cdn.wall-pix.net/albums/art-space/00030109.jpg";
-    var targetPath = cordova.file.applicationStorageDirectory + "testImage.png";
-    //var targetPath = "/data/data/testImage.png";
-    var trustHosts = true
-    var options = {};
-    alert("target path: "+ targetPath);
-       $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-      .then(function(result) {
-        // Success!
-        alert("success: "+ result);
-      }, function(err) {
-        // Error
-        alert( "error: "+err);
-      }, function (progress) {
-        $timeout(function () {
-          $scope.downloadProgress = (progress.loaded / progress.total) * 100;
-          alert( "$scope.downloadProgress");
-        })
-      });
-
-
-    };
-
     $http.get(serverIp +'videos/'+ $stateParams.id).success(function(data) {
             $scope.video = data;
-            $scope.video.url_segura= $sce.trustAsHtml('<iframe width="250px" height="150px" side="center" src="'+$scope.video.url+'" frameborder="0" allowfullscreen></iframe>');
+            $scope.video.url_segura= $sce.trustAsHtml('<iframe width="100%" height="150px" src="'+$scope.video.url+'" frameborder="0" allowfullscreen></iframe>');
             
         });
     
@@ -227,6 +195,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
       var dbResult = History.save(userHistory, function(){
         console.log('se guardo el historial con el resultado: ' + dbResult);
+        alert('se guardo en el historial');
       });
 
     };
@@ -240,6 +209,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       var result = Favorite.save(favorito, function(){
 
         console.log(result.message);
+        alert('Favorito guardado'); 
 
       });
 
@@ -258,11 +228,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
   for(var i=0;i< len;i++)
   { 
     var src= videos[i].url; 
-
-
     videos[i].url = $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
-    
-
   }
 
   $scope.videos = videos;
@@ -388,15 +354,8 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
           $scope.videos[i].url = $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
         }
 
-
-
         });
-
-
   };
-
-
-
 
   $scope.open = function(item){
 
@@ -467,6 +426,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
   var id_face = $localstorage.getObject('user').id;
   var serverIp = window.localStorage.getItem('serverIp');
+  //var id_face = '10154179806703835';
 
     $http.get(serverIp +'users/favourites/'+id_face).
     then(function(data) {
@@ -502,7 +462,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
     });
 
     $scope.doRefresh = function() {
-      $http.get(serverIp +'videos/'+ idvideo)
+      $http.get(serverIp +'users/favourites/'+id_face)
        .success(function(data) {
           $scope.lista_favoritos = data.data;
           var len = $scope.lista_favoritos.length;
@@ -517,6 +477,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
             j++;
             });
           }
+
        })
        .finally(function() {
          // Stop the ion-refresher from spinning

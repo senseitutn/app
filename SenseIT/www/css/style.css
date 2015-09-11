@@ -8,7 +8,7 @@
 	padding: 0 0 0 0 !important;
 }
 
-.center {
+/*.center {
     top: 50%;
     -webkit-transform: translateY(-50%);
     -moz-transform: translateY(-50%);
@@ -18,5 +18,10 @@
     position: absolute !important;
     margin:0 auto;
     width:100%;
-}
+}*/
 
+.center {
+    margin: auto;
+
+    padding-left: 50px;
+}

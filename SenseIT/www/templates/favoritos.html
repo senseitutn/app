@@ -1,8 +1,12 @@
-<ion-view view-title="Favoritos" side="center">
+<ion-view view-title="Favoritos">
   <ion-content class="has-header">
+    <ion-refresher
+    pulling-text="Pull to refresh..."
+    on-refresh="doRefresh()">
+    </ion-refresher>
     <div class="list" show-reoder="true">     
 
-        <ion-item class="item item=thumbnail-left" href="#" ng-repeat="favorito in favoritos track by $index">
+        <ion-item class="item item=thumbnail-left center" ng-repeat="favorito in favoritos track by $index">
 
           <div ng-bind-html="favorito.url"></div>
           <h3 ng-click="open(favorito)">{{favorito.title}}</h3>
