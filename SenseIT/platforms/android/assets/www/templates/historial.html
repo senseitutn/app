@@ -1,0 +1,29 @@
+<ion-view view-title="Historial">
+  <ion-content class="has-header">
+    <ion-refresher
+    pulling-text="Pull to refresh..."
+    on-refresh="doRefresh()">
+    </ion-refresher>
+    
+    <div class="list" show-reoder="true">     
+
+        <ion-item class="item item=thumbnail-left center" ng-click="open(historia)" ng-repeat="historia in videos_historial track by $index">
+          <div ng-bind-html="historia.url"></div>
+          <h3>{{historia.title}}</h3>
+          <p show-data='' youtube="{{historia.url}}"></p>
+          <p>{{historia.description}}</p>
+        </ion-item>  
+
+        <ng-switch on="anyItemOpen()">
+          <div ng-switch-when="true">
+            <div ng-controller="VideoCtrl">
+               {{opened.title}}: overlay: tweet, share, pin
+            </div>  
+           <a ng-click="close()">close</a>         
+          </div>
+        </ng-switch>  
+
+  </ion-content>
+</ion-view> 
+
+

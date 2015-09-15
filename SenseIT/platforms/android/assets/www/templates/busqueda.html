@@ -1,0 +1,27 @@
+
+<ion-view view-title="Resultados">
+  <ion-content class="has-header">
+    <div class="list" show-reoder="true">     
+
+        <ion-item class="item item=thumbnail-left center" ng-click="open(video)" ng-repeat="video in videos track by $index">
+
+          <div ng-bind-html="video.url"></div>
+          <h3>{{video.title}}</h3>
+          <p show-data='' youtube="{{video.url}}"></p>
+          <p>{{video.description}}</p>
+
+        </ion-item>  
+
+     <ng-switch on="anyItemOpen()">
+        <div ng-switch-when="true">
+          <div ng-controller="VideoCtrl">
+             {{opened.title}}: overlay: tweet, share, pin
+          </div>  
+         <a ng-click="close()">close</a>         
+        </div>
+      </ng-switch>  
+
+  </ion-content>
+</ion-view> 
+
+

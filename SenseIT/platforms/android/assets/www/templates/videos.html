@@ -1,0 +1,30 @@
+
+<ion-view view-title="Mis Videos">
+  <ion-content class="has-header">
+    <ion-refresher
+      pulling-text="Pull to refresh..."
+      on-refresh="doRefresh()">
+    </ion-refresher>
+
+    <button class="button button-block button-positive" ng-click="download()">Descargar desde Youtube</button>
+    <button class="button button-block button-positive" ng-click="upload()">Subir Video</button>
+    <div class="list" ng-controller="VideosCtrl" show-reoder="true">     
+ 
+        <ion-item class="item item=thumbnail-left center" ng-click="open(video)" ng-repeat="video in videos">
+          <div ng-bind-html="video.url_preview"></div>
+          <h3>{{video.title}}</h3>
+          <p show-data='' youtube="{{video.url_preview}}"></p>
+          <p>{{video.description}}</p>
+        </ion-item>  
+
+        <ng-switch on="anyItemOpen()">
+          <div ng-switch-when="true">
+            <div ng-controller="VideoCtrl">
+               {{opened.title}}: overlay: tweet, share, pin
+            </div>  
+           <a ng-click="close()">close</a>         
+          </div>
+        </ng-switch>  
+
+  </ion-content>
+</ion-view> 

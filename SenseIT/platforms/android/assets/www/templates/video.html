@@ -1,0 +1,33 @@
+<ion-view view-title="Video">
+  <ion-content>
+    <div class="list card">
+
+      <div class="item">
+        <h2><b>{{video.title}}</b></h2>
+      </div>
+      
+          <a ng-click="reproducir()"> 
+              <div ng-bind-html="video.url_segura"></div>
+              <p show-data=''youtube="{{video.url_segura}}"></p>
+          </a>
+      
+
+      <div class="item item-body">
+        <p>{{video.description}}</p>
+      </div>
+      <button class="button button-block button-positive" margin-top="200px" ng-click="reproducir()">
+          Reproducir
+      </button> 
+
+      <div class="item tabs tabs-secondary tabs-icon-left">
+          <a class="tab-item" ng-click="share()">
+          <i class="icon ion-share button-positive"></i>
+          Compartir
+          </a>
+      </div>
+      <button class="button button-block ion-star button-energized" ng-click="favorito()">Favorito</button>
+    </div>
+
+    </div>
+  </ion-content>
+</ion-view>

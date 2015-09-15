@@ -1,0 +1,40 @@
+/* Empty. Add your own CSS if you like */
+
+.smaller{
+	font-size: 40px !important;
+	max-width: 55px !important;
+	max-height: 50px !important;
+	margin: 0 !important;
+	padding: 0 0 0 0 !important;
+}
+
+/*.center {
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    position: absolute !important;
+    margin:0 auto;
+    width:100%;
+}*/
+
+.center {
+    margin: auto;
+
+    padding-left: 50px;
+}
+
+.click_panel{
+  position:absolute; 
+  width:100%;
+  height:100%;
+  top:0;
+  left: 0;
+  z-index: 1;
+
+  /* edit: fixes overlap error in IE7/8, 
+     make sure you have an empty gif */
+  background-image: url('empty.gif');
+}

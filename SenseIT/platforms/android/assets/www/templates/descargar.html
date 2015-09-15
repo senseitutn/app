@@ -1,0 +1,24 @@
+
+<ion-modal-view style="width:100%; height:50%;" opacity= "0.3">
+	<ion-view view-title="Descargar Desde Youtube" >
+		<ion-content class="has-header" opacity= "0.3">
+			<div class="list card" valign="center" >
+			  <div class="item" align="center">
+			  	
+				<div class="list list-inset">
+				  <label class="item item-input">
+				    <input type="text" ng-model="enteredValue" placeholder="Ingresar link">
+				  </label>
+				</div>
+					
+			  </div>
+			  <a class="item" align="center" href="#">
+			    <button class="button button-block button-positive" margin-top="200px" ng-Click="descargarVideo(enteredValue)">
+		        	Descargar
+		      	</button> 
+		      </a>
+
+			</div>
+	    </ion-content>
+	</ion-view>
+</ion-modal-view>

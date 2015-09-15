@@ -1,0 +1,40 @@
+<ion-view view-title="Home">
+	<ion-nav-buttons side="right">
+      <!--<button class="button" src="img/lupa.png" ng-click="buscar(enteredValue)">
+        Buscar
+      </button>-->
+      <i class="ion-android-search" data-pack="android" height="30px" width="30px" padding-right="10px" ng-click="buscar(enterredValue)" data-tags="magnifying glass"></i>
+      <button class="button" ng-click="doSomething()">
+        Ordenar
+      </button>
+   </ion-nav-buttons>
+	 <ion-content class="has-header">
+
+	 <button class="button" ng-click="reproducir_plugin()">
+        Reproducir Plugin
+      </button>
+		<div class="list" ng-controller="HomeCtrl" show-reorder="true">
+
+				<ion-item class="item item=thumbnail-left center" ng-click="open(video)" ng-repeat="video in videos track by $index">
+			          <div ng-bind-html="video.url"></div>
+			          <h3 >{{video.title}}</h3>
+			          <p show-data='' youtube="{{video.url}}"></p>
+			          <p>{{video.description}}</p>
+			          <br/>
+				</ion-item>  
+
+			    <ng-switch on="anyItemOpen()">
+			        <div ng-switch-when="true">
+			          <div ng-controller="VideoCtrl">
+			             {{opened.title}}: overlay: tweet, share, pin
+			          </div>  
+			         <a ng-click="close()">close</a>         
+			        </div>
+			    </ng-switch>  
+
+		</div>
+
+	</ion-content>
+</ion-view>
+
+<li class="ion-android-search" data-pack="android" data-tags="magnifying glass"></li>

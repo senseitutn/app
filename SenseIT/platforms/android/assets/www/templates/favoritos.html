@@ -1,0 +1,30 @@
+<ion-view view-title="Favoritos">
+  <ion-content class="has-header">
+    <ion-refresher
+    pulling-text="Pull to refresh..."
+    on-refresh="doRefresh()">
+    </ion-refresher>
+    <div class="list" show-reoder="true">     
+
+        <ion-item class="item item=thumbnail-left center" ng-click="open(favorito)" ng-repeat="favorito in favoritos track by $index">
+
+          <div ng-bind-html="favorito.url"></div>
+          <h3>{{favorito.title}}</h3>
+          <p show-data='' youtube="{{favorito.url}}"></p>
+          <p>{{favorito.description}}</p>
+
+        </ion-item>  
+
+     <ng-switch on="anyItemOpen()">
+        <div ng-switch-when="true">
+          <div ng-controller="VideoCtrl">
+             {{opened.title}}: overlay: tweet, share, pin
+          </div>  
+         <a ng-click="close()">close</a>         
+        </div>
+      </ng-switch>  
+
+  </ion-content>
+</ion-view> 
+
+
