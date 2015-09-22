@@ -12,13 +12,13 @@ module Api
 			end
 
 			def get_all_with_video
-				@video = Video.find_by(:id => params[:video_id])
+				@video = Video.find_by(params[:video_id])
 				@favourites = Favourite.where("video_id = #{@video.id}")
 			end
 
 			def create
 				@user = User.find_by(:facebook_id => params[:id_facebook])
-				@favourite = Favourite.find_by(:video_id => params[:video_id], :user_id => @user.id)
+				@favourite = Favourite.create(:video_id => params[:video_id], :user_id => @user.id, :favourited_at => DateTime.now)
 			end
 		end
 	end

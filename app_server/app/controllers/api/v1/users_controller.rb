@@ -35,6 +35,12 @@ module Api
 				@user = User.find_by(:facebook_id => params[:id_facebook])
 			end
 
+			def create_video
+				@user = User.find_by(:facebook_id => params[:id_facebook])
+				@video = @user.videos.create(:title => params[:title], 
+					:description => params[:description] , :url => params[:url])
+			end
+
 			#Get the user favourites
 			def favourites
 				@user = User.find_by(:facebook_id => params[:id_facebook])

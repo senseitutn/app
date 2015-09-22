@@ -10,16 +10,37 @@ Rails.application.routes.draw do
       # resources :users do
       #   resources :videos
       resources :users
-      resources :videos
-      # end
     end
   end
+
+  #### Rutas de VideosController
+
+  # Rutas REST
+  post '/api/v1/videos', to: "api/v1/videos#create"
+
+  get '/api/v1/videos', to: "api/v1/videos#index"
+
+  get '/api/v1/videos/get-by-id/:id', to: "api/v1/videos#show"  
+
+  put '/api/v1/videos/:id', to: "api/v1/videos#update"
+
+  delete '/api/v1/videos/:id', to: "api/v1/videos#destroy"
+
+  # Rutas métodos customizados
+  get 'api/v1/videos/search/:text', to: "api/v1/videos#search_all"
+
+  get 'api/v1/videos/get-most-populars/', to: "api/v1/videos#get_most_populars"
+
+  get 'api/v1/videos/get-recents/', to: "api/v1/videos#get_recents"
+
+  post 'api/v1/videos/create_from_link', to: "api/v1/videos#create_from_link"
+
+
+  #### Sprint 3
 
   get 'api/v1/users/get/:id_facebook', to: "api/v1/users#get_user"
 
   get 'api/v1/users/get_videos/:id_facebook', to: "api/v1/users#get_videos"
-
-   get 'api/v1/videos/search/:text', to: "api/v1/videos#search_all"
 
   get 'api/v1/favourites/get-with-user/:id_facebook', to: "api/v1/favourites#get_all_with_user"
 
@@ -29,15 +50,20 @@ Rails.application.routes.draw do
 
   get 'api/v1/histories/get-by-video/:video_id', to: "api/v1/histories#get_by_video"
 
-  post 'api/v1/histories', to: "api/v1/histories#create"
+  post 'api/v1/histories/create', to: "api/v1/histories#create"
   
+  # sprint 4
+
   post 'api/v1/favourites', to: "api/v1/favourites#create"
 
   #Este es el de prueba que anda, pero despues lo tengo que borrar
   get 'api/v1/users/favourites/:id_facebook', to: "api/v1/users#favourites"
 
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
+  get 'api/v1/histories/get-all-ordered-by-date', to: "api/v1/histories#get_all_ordered_by_date"
+
+  get 'api/v1/histories/get-by-user-ordered-by-date/:id_facebook', to: "api/v1/histories#get_by_user_ordered_by_date"
+
+  post 'api/v1/users/create-video', to: "api/v1/users#create_video"
 
   # You can have the root of your site routed with "root"
    root 'welcome#index'

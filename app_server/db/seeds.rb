@@ -78,6 +78,7 @@ end
 History.create(user_id: 1,video_id: 1,reproduced_at: DateTime.now)
 History.create(user_id: 1,video_id: 1,reproduced_at: DateTime.now - 1)
 History.create(user_id: 1,video_id: 4,reproduced_at: DateTime.now - 1)
+
 History.create(user_id: 1,video_id: 2,reproduced_at: DateTime.now - 1)
 
 History.create(user_id: 2,video_id: 1,reproduced_at: DateTime.now)
@@ -89,6 +90,35 @@ History.create(user_id: 3,video_id: 2,reproduced_at: DateTime.now - 1)
 History.create(user_id: 5,video_id: 5,reproduced_at: DateTime.now - 1)
 History.create(user_id: 5,video_id: 7,reproduced_at: DateTime.now - 2)
 History.create(user_id: 5,video_id: 7,reproduced_at: DateTime.now)
+
+VideoService.increase_reproduction_count(1)
+VideoService.increase_reproduction_count(1)
+VideoService.increase_reproduction_count(1)
+VideoService.increase_reproduction_count(2)
+VideoService.increase_reproduction_count(2)
+VideoService.increase_reproduction_count(4)
+VideoService.increase_reproduction_count(5)
+VideoService.increase_reproduction_count(5)
+VideoService.increase_reproduction_count(6)
+VideoService.increase_reproduction_count(7)
+VideoService.increase_reproduction_count(7)
+
+# Creo favourites de prueba
+
+Favourite.create(:video_id => @v1.id, :user_id => @u1.id, :favourited_at => DateTime.now - 7)
+Favourite.create(:video_id => @v2.id, :user_id => @u1.id, :favourited_at => DateTime.now - 7)
+Favourite.create(:video_id => @v3.id, :user_id => @u1.id, :favourited_at => DateTime.now - 2)
+Favourite.create(:video_id => @v7.id, :user_id => @u1.id, :favourited_at => DateTime.now - 3)
+
+Favourite.create(:video_id => @v1.id, :user_id => @u2.id, :favourited_at => DateTime.now - 3)
+Favourite.create(:video_id => @v2.id, :user_id => @u2.id, :favourited_at => DateTime.now)
+
+Favourite.create(:video_id => @v5.id, :user_id => @u3.id, :favourited_at => DateTime.now)
+
+Favourite.create(:video_id => @v5.id, :user_id => @u4.id, :favourited_at => DateTime.now)
+Favourite.create(:video_id => @v6.id, :user_id => @u4.id, :favourited_at => DateTime.now)
+
+Favourite.create(:video_id => @v4.id, :user_id => @u5.id, :favourited_at => DateTime.now - 5)
 
 # --------No para este sprint
 

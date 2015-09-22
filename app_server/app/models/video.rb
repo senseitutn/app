@@ -1,4 +1,6 @@
 class Video < ActiveRecord::Base
+	before_save :default_values
+
 	#many to many relation with consumers model through favourites
 	has_many :favourites
 	has_many :users, through: :favourites
@@ -23,14 +25,7 @@ class Video < ActiveRecord::Base
 	#validation to attach a video
     validates_attachment_content_type :video, :content_type => ["video/mp4", "video.MOV", "video/mpeg","video/mpeg4"]
 
-    # def create_video(params)
-    # 	video = Video.new
-
-    # 	video.title = params.title
-    # 	video.description = params.description
-    # 	video.url = params.video.url
-    # 	video.video = params.video
-    # 	video.uploaded_at = DateTime.now
-    # 	video.save!
-    # end
+    def default_values
+    	self.reproduction_count ||= 0
+    end
 end

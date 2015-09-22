@@ -1,10 +1,8 @@
 <h1>Bienvenido a SenseIT.com</h1>
 <p>Sube y comparte tus videos 3d!</p>
 
-<p>Un video de test </p>
-<%= video_tag @video.video.url %><br>
-<%= @video.video.url %>
-
+<p>Title: <%= @youtube_video.title %><br></p>
+<p>Url: <%= @youtube_video.url %></p>
 
 <%= link_to "Subir un video", new_video_path %> <br>
 <%= link_to "Listado de usuarios", users_path %>

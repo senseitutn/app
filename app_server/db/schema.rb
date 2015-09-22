@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150828233610) do
+ActiveRecord::Schema.define(version: 20150920232956) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string   "access_token"
@@ -95,6 +95,7 @@ ActiveRecord::Schema.define(version: 20150828233610) do
     t.string   "video_content_type"
     t.integer  "video_file_size"
     t.datetime "video_updated_at"
+    t.integer  "reproduction_count"
   end
 
 end

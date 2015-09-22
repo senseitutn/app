@@ -1,7 +1,7 @@
 module Api
 	module V1
 		class VideosController < ApplicationController
-			# before_filter :restrict_acces
+			skip_before_filter  :verify_authenticity_token
 			respond_to :json
 
 			def index
@@ -13,8 +13,7 @@ module Api
 			end
 
 			def create
-				# TODO: crear video con todos los parametros y asociarle una imagen usando streamio-ffmpeg y paperclip
-				respond_with Video.create(params[:video])
+				VideoService.create_video(params[:title], params[:description], params[:video])
 			end
 
 			def update
@@ -25,50 +24,35 @@ module Api
 				respond_with Video.destroy(params[:id])
 			end
 
+			###### Customs methods
+
+			def create_from_link
+				@youtube_video = YoutubeVideo.new
+  				@youtube_video.url = params[:url]
+
+  				VideoService.download_from_youtube(@youtube_video)
+			end
+
 			def search_all
 				@text = params[:text]
 				@videos = Video.where("title LIKE ? OR description LIKE ?", "%#{@text}%","%#{@text}%")
 			end
 
-			# Customs methods
-			def get_by_ranking
-				#TODO: get_by_ranking
+			#TODO: testear
+			#trae los 5 mas populares
+			def get_most_populars
+				@videos = Video.order("reproduction_count desc").limit(5)
 			end
 
+			#TODO: testear
 			def get_recents
-				#TODO: testear este metodo en consola
-				@start = Date.today
-
-				if(params[:ago] == 'days')
-					@end = @start - params[:days]
-				elsif(params[:ago] == 'week')
-					@end = @start - 7
-				elsif (params[:ago]== 'month') 
-					@end = @start - 30
-				else
-					@end = nil
-				end
-
-				if @end
-					@videos = Video.find(:all, :conditions =>{:created_at => @start..@end}).order("created_at desc")
-				else
-					#traemos los 10 mas recientes
 					@videos = Video.order("created_at desc").limit(10)
-				end
 			end
 
 			private
 			def video_params
 				params.require(:video).permit(:title,:url,:description,:duration,:uploaded_at,:video)
 			end
-			# para el momento en el que necesitemos autenticar el acceso a recursos
-
-			# private
-			# def restrict_access
-			# 	authenticate_or_request_with_http_token do |token, options|
-			# 		ApiKey.exists?(access_token: token)
-			# 	end
-			# end
 		end
 	end
 end
