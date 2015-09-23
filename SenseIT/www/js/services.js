@@ -16,6 +16,11 @@ angular.module('starter.services', ['ngResource'])
 
 })
 
+.factory('VideoNuevo', function($resource){
+  var serverIp = window.localStorage.getItem('serverIp');
+  return $resource(serverIp + 'users/create-video');
+})
+
 .factory('Favorite', function($resource){
   var serverIp = window.localStorage.getItem('serverIp');
   return $resource(serverIp + 'favourites')

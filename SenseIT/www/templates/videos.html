@@ -1,18 +1,21 @@
 
 <ion-view view-title="Mis Videos">
+  <ion-nav-buttons side="right">
+      <i class="icon ion-ios-download-outline placeholder-icon bigger" style="margin-right:10px" ng-click="download()"></i>
+      <i class="icon ion-ios-upload-outline placeholder-icon bigger" style="margin-right:10px" ng-click="upload()"></i>
+   </ion-nav-buttons>
   <ion-content class="has-header">
-    <ion-refresher
-      pulling-text="Pull to refresh..."
-      on-refresh="doRefresh()">
-    </ion-refresher>
-    <button class="button button-block button-positive" ng-click="download()">Descargar desde Youtube</button>
-    <button class="button button-block button-positive" ng-click="upload()">Subir Video</button>
-    <div class="list" ng-controller="VideosCtrl" show-reoder="true">     
  
-        <ion-item class="item item=thumbnail-left center" ng-repeat="video in videos">
-          <div ng-bind-html="video.url_preview"></div>
-          <h3 ng-click="open(video)">{{video.title}}</h3>
-          <p show-data='' youtube="{{video.url_preview}}"></p>
+    <div class="list" ng-controller="VideosCtrl" show-reoder="true">     
+         <ion-refresher
+          pulling-text="Pull to refresh..."
+          on-refresh="doRefreshVideos()">
+        </ion-refresher>
+ 
+        <ion-item class="item item=thumbnail-left center" ng-click="open(video)" ng-repeat="video in videos">
+          <div ng-bind-html="video.url"></div>
+          <h3>{{video.title}}</h3>
+          <p show-data='' youtube="{{video.url}}"></p>
           <p>{{video.description}}</p>
         </ion-item>  
 

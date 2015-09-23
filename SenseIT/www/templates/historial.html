@@ -7,9 +7,9 @@
     
     <div class="list" show-reoder="true">     
 
-        <ion-item class="item item=thumbnail-left center" ng-repeat="historia in videos_historial track by $index">
+        <ion-item class="item item=thumbnail-left center" ng-click="open(historia)" ng-repeat="historia in videos_historial track by $index">
           <div ng-bind-html="historia.url"></div>
-          <h3 ng-click="open(historia)">{{historia.title}}</h3>
+          <h3>{{historia.title}}</h3>
           <p show-data='' youtube="{{historia.url}}"></p>
           <p>{{historia.description}}</p>
         </ion-item>  

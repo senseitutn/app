@@ -6,10 +6,10 @@
     </ion-refresher>
     <div class="list" show-reoder="true">     
 
-        <ion-item class="item item=thumbnail-left center" ng-repeat="favorito in favoritos track by $index">
+        <ion-item class="item item=thumbnail-left center" ng-click="open(favorito)" ng-repeat="favorito in favoritos track by $index">
 
           <div ng-bind-html="favorito.url"></div>
-          <h3 ng-click="open(favorito)">{{favorito.title}}</h3>
+          <h3>{{favorito.title}}</h3>
           <p show-data='' youtube="{{favorito.url}}"></p>
           <p>{{favorito.description}}</p>
 

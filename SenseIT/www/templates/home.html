@@ -1,18 +1,15 @@
 <ion-view view-title="Home">
 	<ion-nav-buttons side="right">
-      <button class="button" src="img/lupa.png" ng-click="buscar(enteredValue)">
-        Buscar
-      </button>
-      <button class="button" ng-click="doSomething()">
-        Ordenar
-      </button>
+      <i class="icon ion-ios-search placeholder-icon bigger" style="margin-right:10px" ng-click="buscar(enteredValue)"></i>
+      <a class="button ion-navicon" ng-click="popover.show($event)"></a>
    </ion-nav-buttons>
 	 <ion-content class="has-header">
+	 
 		<div class="list" ng-controller="HomeCtrl" show-reorder="true">
 
-				<ion-item class="item item=thumbnail-left center" ng-repeat="video in videos track by $index">
+				<ion-item class="item item=thumbnail-left center" ng-click="open(video)" ng-repeat="video in videos track by $index">
 			          <div ng-bind-html="video.url"></div>
-			          <h3 ng-click="open(video)">{{video.title}}</h3>
+			          <h3 >{{video.title}}</h3>
 			          <p show-data='' youtube="{{video.url}}"></p>
 			          <p>{{video.description}}</p>
 			          <br/>
@@ -31,3 +28,5 @@
 
 	</ion-content>
 </ion-view>
+
+<li class="ion-android-search" data-pack="android" data-tags="magnifying glass"></li>

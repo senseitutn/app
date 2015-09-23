@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin', 'ngRoute'])
 
-.controller('AppCtrl', function($scope, $state, $ionicModal, $localstorage, $cordovaOauth, $http, $window, User) {
+.controller('AppCtrl', function($scope, $state, $ionicModal, $localstorage, $cordovaOauth, $ionicPopup, $http, $window, User) {
 
   // Form data for the login modal
   $scope.profileData = null;
@@ -36,7 +36,11 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
    $cordovaOauth.facebook("519491304866168", ["email", "user_website", "user_location", "user_relationships"]).then(function(result) {
        
-        alert("Login satisfactorio");
+        $ionicPopup.alert({
+          content: 'Login exitoso!'
+        }).then(function(res) {
+          console.log('error en el alert');
+        });
 
         window.localStorage.setItem('TokenResponse', result.access_token);
 
@@ -74,25 +78,33 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
         })
        .error( function(error) {
-              alert("Error al pedir datos del usuario ");
+                 $ionicPopup.alert({
+                    content: 'Error al pedir datos del usuario.'
+                  }).then(function(res) {
+                    console.log('error en el alert');
+                  });
 
         });
 
         $scope.modal.hide();
         $state.go('app.home');
     }, function(error) {
-        alert("There was a problem signing in!  See the console for logs"+error);
-
+        $ionicPopup.alert({
+          content: 'Hubo un problema al loguearse. Intente de nuevo.'
+        }).then(function(res) {
+          console.log('error en el alert');
+        });
         console.log(error);
     });
 
 }})
 
-.controller('VideosCtrl', function($scope, $sce, $state, $http, $localstorage, $ionicModal) {
+.controller('VideosCtrl', function($scope, $sce, $state, $http, $localstorage, $ionicPopup, VideoNuevo, $ionicModal) {
 
   var id_face = $localstorage.getObject('user').id;
 
-  //var id_face = '123198231';
+  //var id_face = '10154179806703835';
+  //var id_face = '778320123';
   var serverIp = window.localStorage.getItem('serverIp');
 
   $http.get(serverIp +'users/get_videos/'+id_face).
@@ -102,19 +114,27 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       $scope.videos = data.data.videos;
       var len = $scope.videos.length;
 
+      if(len == 0){
+          $ionicPopup.alert({
+            content: 'Este usuario no tiene videos propios.'
+          }).then(function(res) {
+            //console.log('error en el alert '+res);
+          });
+      }
+
       for(var i=0;i<len;i++)
       { 
-        var src= $scope.videos[i].url_preview; 
+        var src= $scope.videos[i].url; 
 
         //var src = 'https://www.youtube.com/embed/h3LeVGOBjSg'
 
-        $scope.videos[i].url_preview= $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
+        $scope.videos[i].url= $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
 
       }
 
     }, function(response) {
-      alert('no se encontraron videos de este usuario');
-      $state.go('app.home');
+      
+      //$state.go('app.home');
     });
 
   $scope.open = function(item){
@@ -150,21 +170,99 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
         });
   };
 
-  $scope.descargarVideo = function(enteredValue){
+ $scope.doRefreshVideos = function() {
 
-    //hacer el get con el link en enteredValue (NO SE CUAL ES LA URL DEL SERVER PARA ESO)
+    $http.get(serverIp +'users/get_videos/'+id_face)
+     .then(function(data) {
+            $scope.videos = data.data.videos;
+            var len = $scope.videos.length;
+
+            for(var i=0;i<len;i++){ 
+              var src= $scope.videos[i].url; 
+              $scope.videos[i].url= $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
+
+            }
+            $scope.$apply();
+
+     })
+     .finally(function() {
+       // Stop the ion-refresher from spinning
+       $scope.$broadcast('scroll.refreshComplete');
+     });
+  };
+  $scope.descargarVideo = function(enteredValue, $cordovaFileTransfer){
+
+      $ionicPopup.alert({
+        content: 'Video en proceso de descarga'
+      }).then(function(res) {
+        console.log('error en el alert');
+      });
+
+      // hacer un get a /api/v1/videos/get-from-link/:url con enteredValue
+     /*document.addEventListener("deviceready", onDeviceReady, false);
+
+      function onDeviceReady() {
+         // as soon as this function is called FileTransfer "should" be defined
+         console.log(FileTransfer);
+      }*/
+      //Esto es para traer informacion del video de youtube con el ID del video (no funciona del tooo todavia)
+      /*$http.get("http://gdata.youtube.com/feeds/api/videos/65MhbOElCbY").then(function(data){
+          var videoNuevo = [];
+          videoNuevo.title = data.title;
+      });*/
+
+      var videoNuevo = new VideoNuevo;
+      videoNuevo.id_facebook = id_face;
+      videoNuevo.title = "Experiencia Neimar";
+      videoNuevo.description = "Mueva su telefono para tomar el terreno de juego como el numero 10 de Brasil";
+      videoNuevo.url = "https://www.youtube.com/embed/bBZhuqPRx9c";
+      
+
+      VideoNuevo.save(videoNuevo, function(){
+              console.log('se creo el video');
+              });
+
+      /*options = {};
+      url = "http://view.ionic.io/phones.png";
+      //var targetPath = cordova.file.dataDirectory + "a.jpg";
+      var targetPath = "C:/Users/Magali/Desktop/files/a.jpg"
+      alert('target path: '+targetPath);
+      var trustHosts = true;
+      var result = $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
+      .then(function(entry) {
+              value = angular.toJson(entry.nativeURL);
+              $scope.imgFile = entry.toURL();
+              alert('entro al then del download');
+
+              console.log($scope.imgFile); 
+              $scope.i2 =    entry.toInternalURL(); 
+              console.log($scope.i2);
+      }, function(err) {
+          // Error
+          alert('error');
+          console.log("error");
+      }, function (progress) {
+          $timeout(function () {
+            $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+          })
+      });
+      alert('resultado cordovaFileTransfer : ' + result);*/
+
+    
+    //alert('Video en proceso de descarga..');
+        //hacer el get con el link en enteredValue (NO SE CUAL ES LA URL DEL SERVER PARA ESO)
     //agregarlo a mis videos
+    $scope.modal.hide();
   };
 
   
 })
 
-.controller('VideoCtrl', function($scope, $cordovaSocialSharing, $cordovaFile, $localstorage, $stateParams, $http, $sce, History, Favorite,$timeout) {
+.controller('VideoCtrl', function($scope, $cordovaSocialSharing, $cordovaFile, echo, $localstorage, $stateParams, $http, $ionicPopup, $sce, History, Favorite,$timeout) {
     
     var id_face = $localstorage.getObject('user').id;
     //Mi usuario de face
     //var id_face='10154179806703835';
-
     var serverIp = window.localStorage.getItem('serverIp');
 
     $http.get(serverIp +'videos/'+ $stateParams.id).success(function(data) {
@@ -179,9 +277,17 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       $cordovaSocialSharing
       .shareViaFacebook("Mira este video en 360! Disfrutalo en realidad virtual con SenseIT", null,$scope.video.url)
       .then(function(result){
-        alert('El video se compartio en Facebook');
+           $ionicPopup.alert({
+              content: 'El video se compartió en Facebook!'
+            }).then(function(res) {
+              console.log('error en el alert');
+            });
       }, function(err){
-        alert('Error al compartir el video en Facebook');
+           $ionicPopup.alert({
+              content: 'Error al compartir el video en Facebook :('
+            }).then(function(res) {
+              console.log('error en el alert');
+            });
       });
     };
 
@@ -195,8 +301,17 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
       var dbResult = History.save(userHistory, function(){
         console.log('se guardo el historial con el resultado: ' + dbResult);
-        alert('se guardo en el historial');
+        $ionicPopup.alert({
+          content: 'Se guardó el video en el historial.'
+        }).then(function(res) {
+          console.log('error en el alert');
+        });
       });
+
+      window.echo("echome", function(echoValue) {
+        alert(echoValue == "echome"); // should alert true.
+      });
+
 
     };
 
@@ -209,7 +324,11 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       var result = Favorite.save(favorito, function(){
 
         console.log(result.message);
-        alert('Favorito guardado'); 
+        $ionicPopup.alert({
+          content: 'Se guardó el video en favoritos.'
+        }).then(function(res) {
+          console.log('error en el alert');
+        });
 
       });
 
@@ -218,9 +337,8 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
   
 })
 
-.controller('BusquedaCtrl', function($scope, $stateParams, $sce){
+.controller('BusquedaCtrl', function($scope, $stateParams, $sce, $state){
 
-  console.log('llegamos al controlador de busqueda');
   var videos = angular.fromJson($stateParams.videos);
 
   var len = videos.length;
@@ -233,6 +351,22 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
   $scope.videos = videos;
 
+  $scope.open = function(item){
+       $state.go('app.video', { id: item.id});
+    };
+    
+  $scope.isOpen = function(item){
+      return $scope.opened === item;
+  };
+  
+  $scope.anyItemOpen = function() {
+      return $scope.opened !== undefined;
+  };
+  
+  $scope.close = function() {
+      $scope.opened = undefined;
+  };
+
 })
 
 
@@ -241,16 +375,19 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
     //busco id usuario en localStorage
     var id_face = $localstorage.getObject('user').id;
 
-    //var id_face = '123198231';
     var serverIp = window.localStorage.getItem('serverIp');
 
     $http.get(serverIp +'histories/get-by-user/'+id_face).success(function(data) {
       $scope.historial = data;
       console.log(data);
 
-      if(data.message == "el usuario no tiene user histories asociadas")
+      if(data.message == "el usuario no tiene user histories asociadas ")
       {
-        alert(data.message);
+          $ionicPopup.alert({
+            content: 'El usuario no tiene historial.'
+          }).then(function(res) {
+            console.log('error en el alert');
+          });
       }
       else
       {
@@ -309,8 +446,12 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
     $http.get(serverIp +'histories/get-by-user/'+id_face)
      .success(function(data) {
              $scope.historial = data;
-              if(data.message == "el usuario no tiene user histories asociadas"){
-                alert(data.message);
+              if(data.message == "el usuario no tiene user histories asociadas "){
+                  $ionicPopup.alert({
+                    content: 'El usuario no tiene historial.'
+                  }).then(function(res) {
+                    console.log('error en el alert');
+                  });
               }else{
 
               var len = $scope.historial.length;
@@ -337,7 +478,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
  
 })
 
-.controller('HomeCtrl', function($scope, $stateParams, $sce, $state, $http, $ionicModal, echo){
+.controller('HomeCtrl', function($scope, $stateParams, $sce, $state, $http, $ionicModal, $window, $ionicPopup, $ionicPopover){
 
   var serverIp = window.localStorage.getItem('serverIp');
 
@@ -395,7 +536,11 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
         if(data.message == "no hay resultados para "+ enteredValue)
         {
-          alert('No hay resultados para '+enteredValue);
+          $ionicPopup.alert({
+            content: "No se encontraron resultados"
+          }).then(function(res) {
+            console.log('error en el alert');
+          });
         }
         else
         {
@@ -409,15 +554,47 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
     
   };
 
+  $ionicPopover.fromTemplateUrl('templates/reordenar.html', {
+    scope: $scope,
+  }).then(function(popover) {
+    $scope.popover = popover;
+  });
 
-  $scope.reproducir = function(){
+  $scope.closePopover = function() {
+    var promise = $scope.popover.hide();
+  };
+  $scope.pedirVideosPopulares = function(){
 
-    //cordova.exec(function(winParam) {}, function(error) {}, "service","action", ["firstArgument", "secondArgument", 42,false]);
-    window.echo("echome", function(echoValue) {
-        alert(echoValue == "echome"); // should alert true.
+    $http.get(serverIp +'videos/get-most-populars/').success(function(data) {
+        $scope.videos = data.videos;
+        var len = $scope.videos.length;
+
+        for(var i=0;i< len;i++)
+        { 
+          var src= $scope.videos[i].url; 
+
+          $scope.videos[i].url = $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
+        }
+       $scope.closePopover();
     });
+    
+  };
 
+  $scope.pedirVideosFecha = function(){
 
+    $http.get(serverIp +'videos/get-recents/').success(function(data) {
+        $scope.videos = data.videos;
+        var len = $scope.videos.length;
+        for(var i=0;i< len;i++)
+        { 
+          var src= $scope.videos[i].url; 
+
+          $scope.videos[i].url = $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
+        }
+
+        $scope.closePopover();
+
+    });
   };
 
 })
@@ -457,13 +634,17 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       }
 
     }, function(response) {
-      alert('no se encontraron favoritos de este usuario');
+          $ionicPopup.alert({
+            content: 'No se encontraron favoritos de este usuario.'
+          }).then(function(res) {
+            console.log('error en el alert');
+          });
       $state.go('app.home');
     });
 
     $scope.doRefresh = function() {
       $http.get(serverIp +'users/favourites/'+id_face)
-       .success(function(data) {
+       .then(function(data) {
           $scope.lista_favoritos = data.data;
           var len = $scope.lista_favoritos.length;
           var j = 0;

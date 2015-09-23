@@ -8,6 +8,7 @@ angular.module('plugin', ['ngCordova', 'ionic'])
 
             var result = cordova.exec(callback, function(err) {
                 callback('Nothing to echo.');
+                alert('el error es: '+err);
                 }, "Echo", "echo", [str]);
             alert('termino el exec con:'+result);
         };
@@ -15,6 +16,4 @@ angular.module('plugin', ['ngCordova', 'ionic'])
         return 1;
 
     });       
-
-
 
