@@ -20,7 +20,7 @@ video_list = [
 ]
 
 video_list.each do |video|
-	Video.create( :title => video[0], :url => video[1], :description => video[2])
+	Video.create( :title => video[0], :url => video[1], :description => video[2], :uploaded_at => DateTime.now - Random.rand(0..15))
 end
 
 # User

@@ -33,12 +33,13 @@ module Api
 
 			def get_videos
 				@user = User.find_by(:facebook_id => params[:id_facebook])
+				@videos = @user.videos.order("uploaded_at desc")
 			end
 
 			def create_video
 				@user = User.find_by(:facebook_id => params[:id_facebook])
 				@video = @user.videos.create(:title => params[:title], 
-					:description => params[:description] , :url => params[:url])
+					:description => params[:description] , :url => params[:url], :uploaded_at => DateTime.now)
 			end
 
 			#Get the user favourites
