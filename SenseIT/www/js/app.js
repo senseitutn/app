@@ -101,7 +101,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ngResou
   url: "/acerca",
   views: {
       'menuContent': {
-          templateUrl: "templates/acerca.html"
+          templateUrl: "templates/acerca.html",
+          controller: "AppCtrl"
       }
   }
 })

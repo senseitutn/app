@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin', 'ngRoute'])
 
-.controller('AppCtrl', function($scope, $state, $ionicModal,$ionicPlatform, $localstorage, $cordovaOauth, $ionicPopup, $http, $window, User) {
+.controller('AppCtrl', function($scope, $state, $ionicModal,$ionicPlatform, $localstorage, $cordovaOauth,  $cordovaSocialSharing, $ionicPopup, $http, $window, User) {
 
   // Form data for the login modal
   $scope.profileData = null;
@@ -17,11 +17,31 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
       if (token === null)
       {
-        //$scope.login();
+        $scope.login();
       }
   
     });
+  $scope.shareApp = function(){
+   // $cordovaSocialSharing.share("This is your message", "This is your subject", "www/imagefile.png", "http://blog.nraboy.com")
+      $cordovaSocialSharing
+      .shareViaFacebook("Descargate SenseIT!", "www/img/logo.jpg", "www/img/logo.jpg")
+      .then(function(result){
+           $ionicPopup.alert({
+              content: 'El video se compartió en Facebook!'
+            }).then(function(res) {
+              console.log('error en el alert');
+            });
+      }, function(err){
+           $ionicPopup.alert({
+              content: 'Error al compartir la aplicación en Facebook :('
+            }).then(function(res) {
+              console.log('error en el alert');
+              alert("error: "+err.message);
+            });
+        
+      });
 
+  };
 
   // Triggered in the login modal to close it
   $scope.closeLogin = function() {
@@ -102,9 +122,9 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
 .controller('VideosCtrl', function($scope, $sce, $state, $http, $localstorage, $ionicPopup, VideoNuevo, $ionicModal) {
 
-  //var id_face = $localstorage.getObject('user').id;
+  var id_face = $localstorage.getObject('user').id;
 
-  var id_face = '10154179806703835';
+  //var id_face = '10154179806703835';
   var serverIp = window.localStorage.getItem('serverIp');
 
   $scope.files = [
@@ -139,15 +159,10 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
     }, function(response) {
       
-      //$state.go('app.home');
     });
 
   $scope.open = function(item){
-        /*if ($scope.isOpen(item)){
-            $scope.opened = undefined;
-        } else {
-            $scope.opened = item;
-        }      */  
+
        $state.go('app.video', { id: item.id});
     };
     
@@ -723,7 +738,24 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
   $scope.closeLogin = function() {
     $scope.modal.hide();
   };
+  $scope.shareApp = function(){
+      $cordovaSocialSharing
+      .shareViaFacebook("Descargate SenseIT!! Y disfrutá de la mejor aplicación de realidad virtual. https://play.google.com/store?hl=es-419", null,"img/logo_transparent.png")
+      .then(function(result){
+           $ionicPopup.alert({
+              content: 'El video se compartió en Facebook!'
+            }).then(function(res) {
+              console.log('error en el alert');
+            });
+      }, function(err){
+           $ionicPopup.alert({
+              content: 'Error al compartir la aplicación en Facebook :('
+            }).then(function(res) {
+              console.log('error en el alert');
+            });
+      });
 
+  };
   $scope.fbLogout = function() {
   
     //delete local storage information

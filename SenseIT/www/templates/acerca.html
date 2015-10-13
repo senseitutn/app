@@ -1,8 +1,11 @@
 <ion-view view-title="Acerca de Sense IT">
-  <ion-content class="has-header">
+  <ion-content class="has-header" ng-controller="AppCtrl">
     <div class="card" style="text-align:center">
       <img class="smaller" src="img/logo_transparent.png"></img><br/>
       <p align="center"> Sense IT es una aplicacion de realidad virtual gratuita y de alta calidad</p>
+      <button class="button button-block button-positive" ng-click="shareApp()">
+          Compartir Aplicacion 
+      </button>   
     </div> 
 
     <div class="card" style="text-align:center">
