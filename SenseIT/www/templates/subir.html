@@ -1,0 +1,37 @@
+
+<!--<ion-modal-view style="width:100%; height:50%;" opacity= "0.3">
+	<ion-view view-title="Subir Video" >
+		<ion-content class="has-header" opacity= "0.3">
+			<div class="list card" valign="center" ng-controller="AppCtrl">
+			  <div class="item" align="center">
+			  	
+				<div class="list list-inset">
+				  <label class="item item-input">
+				    <input type="text" ng-model="enteredValue" placeholder="Ingresar link">
+				  </label>
+				</div>
+					
+			  </div>
+			  <a class="item" align="center" href="#">
+			    <button class="button button-block button-positive" margin-top="200px" ng-Click="subirVideo(enteredValue)">
+		        	Seleccionar video
+		      	</button> 
+		      </a>
+
+			</div>
+	    </ion-content>
+	</ion-view>
+</ion-modal-view>-->
+<ion-modal-view style="width:100%; height:50%;" opacity= "0.3">
+	<ion-content ng-controller="VideosCtrl">
+	    <div class="list">
+	        <div ng-repeat="file in files">
+	            <a class="item item-icon-left" href="#" ng-click="getContents(file.nativeURL)">
+	                <i ng-show="file.isDirectory" class="icon ion-folder"></i>
+	                <i ng-show="file.isFile" class="icon ion-document"></i>
+	                {{file.name}}
+	            </a>
+	        </div>
+	    </div>
+	</ion-content>
+</ion-modal-view>

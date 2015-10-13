@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin', 'ngRoute'])
 
-.controller('AppCtrl', function($scope, $state, $ionicModal, $localstorage, $cordovaOauth, $ionicPopup, $http, $window, User) {
+.controller('AppCtrl', function($scope, $state, $ionicModal,$ionicPlatform, $localstorage, $cordovaOauth, $ionicPopup, $http, $window, User) {
 
   // Form data for the login modal
   $scope.profileData = null;
@@ -17,10 +17,11 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
       if (token === null)
       {
-        $scope.login();
+        //$scope.login();
       }
   
     });
+
 
   // Triggered in the login modal to close it
   $scope.closeLogin = function() {
@@ -37,7 +38,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
    $cordovaOauth.facebook("519491304866168", ["email", "user_website", "user_location", "user_relationships"]).then(function(result) {
        
         $ionicPopup.alert({
-          content: 'Login exitoso!'
+          content: 'Login realizado con éxito'
         }).then(function(res) {
           console.log('error en el alert');
         });
@@ -101,11 +102,18 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
 .controller('VideosCtrl', function($scope, $sce, $state, $http, $localstorage, $ionicPopup, VideoNuevo, $ionicModal) {
 
-  var id_face = $localstorage.getObject('user').id;
+  //var id_face = $localstorage.getObject('user').id;
 
-  //var id_face = '10154179806703835';
-  //var id_face = '778320123';
+  var id_face = '10154179806703835';
   var serverIp = window.localStorage.getItem('serverIp');
+
+  $scope.files = [
+    { name: 'data', nativeURL: 'data', isDirectory: true, isFile: false },
+    { name: 'media', nativeURL: 'media', isDirectory: true, isFile: false },
+    { name: 'obb', nativeURL: 'obb', isDirectory: true, isFile: false },
+    { name: 'Videos', nativeURL: 'Videos', isDirectory: true, isFile: false }
+
+  ];
 
   $http.get(serverIp +'users/get_videos/'+id_face).
     then(function(data) {
@@ -125,9 +133,6 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       for(var i=0;i<len;i++)
       { 
         var src= $scope.videos[i].url; 
-
-        //var src = 'https://www.youtube.com/embed/h3LeVGOBjSg'
-
         $scope.videos[i].url= $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
 
       }
@@ -170,6 +175,92 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
         });
   };
 
+  $scope.upload = function(){
+
+
+      $ionicModal.fromTemplateUrl('templates/subir.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+      }).then(function(modal) {
+        $scope.modal = modal;
+        $scope.modal.show();
+ 
+        });
+
+  };
+
+  $scope.getContents = function(path) {
+
+    if(path == 'Videos'){
+        $scope.files =[  
+        { name: 'Videos viejos', nativeURL: 'Videos viejos', isDirectory: true, isFile: false },
+        { name: 'Glaciares en Alaska', nativeURL: 'Glaciares en Alaska', isDirectory: false, isFile: true },
+        { name: 'Perdido en Paris', nativeURL: 'Perdido en Paris', isDirectory: false, isFile: true },
+        { name: 'Viaje en helicoptero', nativeURL: 'Viaje en helicoptero', isDirectory: false, isFile: true }
+        ];
+    };
+    if(path == 'Glaciares en Alaska'){
+
+      $ionicPopup.alert({
+            content: 'Video subido exitosamente'
+          }).then(function(res) {
+            //console.log('error en el alert '+res);
+      });
+
+      var videoNuevo = new VideoNuevo;
+      videoNuevo.id_facebook = id_face;
+      videoNuevo.title = "Glaciares en Alaska";
+      videoNuevo.description = "Vea los glaciares derritiendose en Alaska";
+      videoNuevo.url = "https://www.youtube.com/embed/XtbgPurqkUc";
+      
+      VideoNuevo.save(videoNuevo, function(){
+              console.log('se creo el video');
+              });
+
+      $scope.modal.hide();
+    };
+
+    if(path == 'Perdido en Paris'){
+      $ionicPopup.alert({
+            content: 'Video subido exitosamente'
+          }).then(function(res) {
+            //console.log('error en el alert '+res);
+      });
+
+      var videoNuevo = new VideoNuevo;
+      videoNuevo.id_facebook = id_face;
+      videoNuevo.title = "Perdido en Paris";
+      videoNuevo.description = "Transportese a un bar en Paris";
+      videoNuevo.url = "https://www.youtube.com/embed/Xe6YI-Ax3d0";
+      
+      VideoNuevo.save(videoNuevo, function(){
+              console.log('se creo el video');
+              });
+
+      $scope.modal.hide();
+    }    
+
+    if(path == 'Viaje en helicoptero'){
+      $ionicPopup.alert({
+            content: 'Video subido exitosamente'
+          }).then(function(res) {
+            //console.log('error en el alert '+res);
+      });
+
+      var videoNuevo = new VideoNuevo;
+      videoNuevo.id_facebook = id_face;
+      videoNuevo.title = "Viaje en helicoptero";
+      videoNuevo.description = "Vea a Sidney, Australia desde arriba de un helicoptero";
+      videoNuevo.url = "https://www.youtube.com/embed/Po9PYGw0X28";
+      
+      VideoNuevo.save(videoNuevo, function(){
+              console.log('se creo el video');
+              });
+
+      $scope.modal.hide();
+    }   
+  };
+
  $scope.doRefreshVideos = function() {
 
     $http.get(serverIp +'users/get_videos/'+id_face)
@@ -190,26 +281,14 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
        $scope.$broadcast('scroll.refreshComplete');
      });
   };
-  $scope.descargarVideo = function(enteredValue, $cordovaFileTransfer){
+
+  $scope.descargarVideo = function(enteredValue){
 
       $ionicPopup.alert({
         content: 'Video en proceso de descarga'
       }).then(function(res) {
         console.log('error en el alert');
       });
-
-      // hacer un get a /api/v1/videos/get-from-link/:url con enteredValue
-     /*document.addEventListener("deviceready", onDeviceReady, false);
-
-      function onDeviceReady() {
-         // as soon as this function is called FileTransfer "should" be defined
-         console.log(FileTransfer);
-      }*/
-      //Esto es para traer informacion del video de youtube con el ID del video (no funciona del tooo todavia)
-      /*$http.get("http://gdata.youtube.com/feeds/api/videos/65MhbOElCbY").then(function(data){
-          var videoNuevo = [];
-          videoNuevo.title = data.title;
-      });*/
 
       var videoNuevo = new VideoNuevo;
       videoNuevo.id_facebook = id_face;
@@ -222,50 +301,20 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
               console.log('se creo el video');
               });
 
-      /*options = {};
-      url = "http://view.ionic.io/phones.png";
-      //var targetPath = cordova.file.dataDirectory + "a.jpg";
-      var targetPath = "C:/Users/Magali/Desktop/files/a.jpg"
-      alert('target path: '+targetPath);
-      var trustHosts = true;
-      var result = $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-      .then(function(entry) {
-              value = angular.toJson(entry.nativeURL);
-              $scope.imgFile = entry.toURL();
-              alert('entro al then del download');
-
-              console.log($scope.imgFile); 
-              $scope.i2 =    entry.toInternalURL(); 
-              console.log($scope.i2);
-      }, function(err) {
-          // Error
-          alert('error');
-          console.log("error");
-      }, function (progress) {
-          $timeout(function () {
-            $scope.downloadProgress = (progress.loaded / progress.total) * 100;
-          })
-      });
-      alert('resultado cordovaFileTransfer : ' + result);*/
-
-    
-    //alert('Video en proceso de descarga..');
-        //hacer el get con el link en enteredValue (NO SE CUAL ES LA URL DEL SERVER PARA ESO)
-    //agregarlo a mis videos
     $scope.modal.hide();
   };
 
   
 })
 
-.controller('VideoCtrl', function($scope, $cordovaSocialSharing, $cordovaFile, echo, $localstorage, $stateParams, $http, $ionicPopup, $sce, History, Favorite,$timeout) {
+.controller('VideoCtrl', function($scope, $cordovaSocialSharing, echo, $localstorage, $stateParams, $http, $ionicPopup, $sce, History, Favorite,$timeout) {
     
     var id_face = $localstorage.getObject('user').id;
     //Mi usuario de face
     //var id_face='10154179806703835';
     var serverIp = window.localStorage.getItem('serverIp');
 
-    $http.get(serverIp +'videos/'+ $stateParams.id).success(function(data) {
+    $http.get(serverIp +'videos/get-by-id/'+ $stateParams.id).success(function(data) {
             $scope.video = data;
             $scope.video.url_segura= $sce.trustAsHtml('<iframe width="100%" height="150px" src="'+$scope.video.url+'" frameborder="0" allowfullscreen></iframe>');
             
@@ -308,8 +357,8 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
         });
       });
 
-      window.echo("echome", function(echoValue) {
-        alert(echoValue == "echome"); // should alert true.
+      window.echo("http://10.5.4.161:3000/system/videos/youtube/,Aircraft", function(echoValue) {
+        //alert(echoValue == "echome"); // should alert true.
       });
 
 
@@ -374,10 +423,10 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
     //busco id usuario en localStorage
     var id_face = $localstorage.getObject('user').id;
-
+    //var id_face='10154179806703835';
     var serverIp = window.localStorage.getItem('serverIp');
 
-    $http.get(serverIp +'histories/get-by-user/'+id_face).success(function(data) {
+    $http.get(serverIp +'histories/get-by-user-ordered-by-date/'+id_face).success(function(data) {
       $scope.historial = data;
       console.log(data);
 
@@ -402,9 +451,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
         
         var idvideo = $scope.historial[i].video_id; 
 
-
-
-        $http.get(serverIp +'videos/'+ idvideo).success(function(data) {
+        $http.get(serverIp +'histories/get-by-user-ordered-by-date/'+ id_face).success(function(data) {
         $scope.videos_historial[j] = data;   
         var src = $scope.videos_historial[j].url;
 
@@ -443,7 +490,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
   $scope.doRefresh = function() {
 
-    $http.get(serverIp +'histories/get-by-user/'+id_face)
+    $http.get(serverIp +'histories/get-by-user-ordered-by-date/'+id_face)
      .success(function(data) {
              $scope.historial = data;
               if(data.message == "el usuario no tiene user histories asociadas "){
@@ -459,7 +506,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
               $scope.videos_historial = [];
               for(var i=0;i<len;i++){ 
                 var idvideo = $scope.historial[i].video_id; 
-                $http.get(serverIp +'videos/'+ idvideo).success(function(data) {
+                $http.get(serverIp +'videos/get-by-id/'+ idvideo).success(function(data) {
                 $scope.videos_historial[j] = data;   
                 var src = $scope.videos_historial[j].url;
                 $scope.videos_historial[j].url= $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
@@ -491,7 +538,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
         for(var i=0;i< len;i++)
         { 
           var src= $scope.videos[i].url; 
-
+          //var src = "http://img.youtube.com/vi/6uG9vtckp1U/mqdefault.jpg"
           $scope.videos[i].url = $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
         }
 
@@ -603,9 +650,8 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
   var id_face = $localstorage.getObject('user').id;
   var serverIp = window.localStorage.getItem('serverIp');
-  //var id_face = '10154179806703835';
-
-    $http.get(serverIp +'users/favourites/'+id_face).
+ //var id_face='10154179806703835';
+    $http.get(serverIp +'favourites/get-with-user/'+id_face).
     then(function(data) {
       // this callback will be called asynchronously
       // when the response is available
@@ -620,7 +666,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       { 
         
         var idvideo = $scope.lista_favoritos[i].video_id; 
-        $http.get(serverIp +'videos/'+ idvideo).success(function(data) {
+        $http.get(serverIp +'videos/get-by-id/'+ idvideo).success(function(data) {
         $scope.favoritos[j] = data;   
         var src = $scope.favoritos[j].url;
 
@@ -643,7 +689,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
     });
 
     $scope.doRefresh = function() {
-      $http.get(serverIp +'users/favourites/'+id_face)
+      $http.get(serverIp +'favourites/get-with-user/'+id_face)
        .then(function(data) {
           $scope.lista_favoritos = data.data;
           var len = $scope.lista_favoritos.length;
@@ -651,7 +697,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
           $scope.favoritos = [];
           for(var i=0;i<len;i++){ 
             var idvideo = $scope.lista_favoritos[i].video_id; 
-            $http.get(serverIp +'videos/'+ idvideo).success(function(data) {
+            $http.get(serverIp +'videos/get-by-id/'+ idvideo).success(function(data) {
             $scope.favoritos[j] = data;   
             var src = $scope.favoritos[j].url;
             $scope.favoritos[j].url= $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
@@ -700,4 +746,4 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
     }) ;
 
   }
-})
+});

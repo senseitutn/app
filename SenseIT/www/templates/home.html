@@ -8,7 +8,7 @@
 		<div class="list" ng-controller="HomeCtrl" show-reorder="true">
 
 				<ion-item class="item item=thumbnail-left center" ng-click="open(video)" ng-repeat="video in videos track by $index">
-			          <div ng-bind-html="video.url"></div>
+			          <div ng-bind-html="video.url" ></div>
 			          <h3 >{{video.title}}</h3>
 			          <p show-data='' youtube="{{video.url}}"></p>
 			          <p>{{video.description}}</p>
@@ -30,3 +30,4 @@
 </ion-view>
 
 <li class="ion-android-search" data-pack="android" data-tags="magnifying glass"></li>
+

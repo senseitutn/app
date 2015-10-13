@@ -33,7 +33,7 @@ angular.module('starter.services', ['ngResource'])
 })
 .factory('History', function($resource){
   var serverIp = window.localStorage.getItem('serverIp');
-  return $resource(serverIp + 'histories')
+  return $resource(serverIp + 'histories/create')
 })
 
 .factory('$localstorage', ['$window', function($window) {
@@ -54,4 +54,5 @@ angular.module('starter.services', ['ngResource'])
     	return $window.localStorage.removeItem(key);
     }
   }
-}]);
+}])
+;
