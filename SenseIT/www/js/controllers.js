@@ -120,7 +120,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
 }})
 
-.controller('VideosCtrl', function($scope, $sce, $state, $http, $localstorage, $ionicPopup, VideoNuevo, $ionicModal) {
+.controller('VideosCtrl', function($scope, $sce, $state, $http, $localstorage, $timeout, $ionicPopup, $ionicLoading, VideoNuevo, $ionicModal) {
 
   var id_face = $localstorage.getObject('user').id;
 
@@ -216,11 +216,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
     };
     if(path == 'Glaciares en Alaska'){
 
-      $ionicPopup.alert({
-            content: 'Video subido exitosamente'
-          }).then(function(res) {
-            //console.log('error en el alert '+res);
-      });
+
 
       var videoNuevo = new VideoNuevo;
       videoNuevo.id_facebook = id_face;
@@ -229,9 +225,28 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       videoNuevo.url = "https://www.youtube.com/embed/XtbgPurqkUc";
       
       VideoNuevo.save(videoNuevo, function(){
-              console.log('se creo el video');
-              });
+            console.log('se creo el video');
+      });
+   
+      $ionicLoading.show({
+        content: 'Loading',
+        animation: 'fade-in',
+        showBackdrop: true,
+        maxWidth: 200,
+        showDelay: 0,
+        duration: 3800
+      });
 
+      setTimeout(function(){
+            $ionicPopup.alert({
+              content: 'Video subido exitosamente'
+            }).then(function(res) {
+                  //console.log('error en el alert '+res);
+            });
+       //your code to be executed after 1 seconds
+      }, 4000);      
+   
+  
       $scope.modal.hide();
     };
 
@@ -251,6 +266,24 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       VideoNuevo.save(videoNuevo, function(){
               console.log('se creo el video');
               });
+      $ionicLoading.show({
+        content: 'Loading',
+        animation: 'fade-in',
+        showBackdrop: true,
+        maxWidth: 200,
+        showDelay: 0,
+        duration: 3800
+      });
+
+      setTimeout(function(){
+            $ionicPopup.alert({
+              content: 'Video subido exitosamente'
+            }).then(function(res) {
+                  //console.log('error en el alert '+res);
+            });
+       //your code to be executed after 1 seconds
+      }, 4000);      
+   
 
       $scope.modal.hide();
     }    
@@ -271,6 +304,24 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       VideoNuevo.save(videoNuevo, function(){
               console.log('se creo el video');
               });
+      $ionicLoading.show({
+        content: 'Loading',
+        animation: 'fade-in',
+        showBackdrop: true,
+        maxWidth: 200,
+        showDelay: 0,
+        duration: 3800
+      });
+
+      setTimeout(function(){
+            $ionicPopup.alert({
+              content: 'Video subido exitosamente'
+            }).then(function(res) {
+                  //console.log('error en el alert '+res);
+            });
+       //your code to be executed after 1 seconds
+      }, 4000);      
+   
 
       $scope.modal.hide();
     }   
@@ -299,11 +350,11 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
   $scope.descargarVideo = function(enteredValue){
 
-      $ionicPopup.alert({
+      /*$ionicPopup.alert({
         content: 'Video en proceso de descarga'
       }).then(function(res) {
         console.log('error en el alert');
-      });
+      });*/
 
       var videoNuevo = new VideoNuevo;
       videoNuevo.id_facebook = id_face;
@@ -315,6 +366,24 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       VideoNuevo.save(videoNuevo, function(){
               console.log('se creo el video');
               });
+
+      $ionicLoading.show({
+        content: 'Loading',
+        animation: 'fade-in',
+        showBackdrop: true,
+        maxWidth: 200,
+        showDelay: 0,
+        duration: 4800
+      });
+
+      setTimeout(function(){
+            $ionicPopup.alert({
+              content: 'Video descargado exitosamente'
+            }).then(function(res) {
+                  //console.log('error en el alert '+res);
+            });
+       //your code to be executed after 1 seconds
+      }, 5000);  
 
     $scope.modal.hide();
   };
