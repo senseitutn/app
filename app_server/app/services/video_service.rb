@@ -29,16 +29,14 @@ class VideoService
 
   		#cambio el nombre del video, quitando caracteres especiales
   		file_name = Dir.new(destiny_folder).entries.select{|file| file.include? youtube_video.title.split('.').first}.first
-  		File.rename("#{destiny_folder}/#{file_name}",file_name.gsub(/[^0-9A-Za-z]/, ''))
-  		FileUtils.mv(file_name.gsub(/[^0-9A-Za-z]/, ''), destiny_folder)
+  		new_file_name = file_name.gsub(/[^0-9A-Za-z]/, '')
+  		File.rename("#{destiny_folder}/#{file_name}",new_file_name)
+  		FileUtils.mv(new_file_name, destiny_folder)
 	end
 
-	def self.split_into_frames(youtube_video)
-		video_directory = @@videos_base_directory + "/" + youtube_video.title.gsub(/[^0-9A-Za-z]/, '') + "/"
-		#src_file = video_directory + "#{youtube_video.title}.#{youtube_video.format}"
-		src_file = video_directory + Dir.new(video_directory).entries.select{|file| file.include? youtube_video.title.split('.').first}.first
-		system "ffmpeg -i #{src_file} -r 60 -f image2 #{youtube_video.title}-%07d.png"
-		# ffmpeg -i terry\ \"el\ tornado\".webm -r 60 -f terry-el-tornado terry-el-tornado-%07d.png
+	def self.process_video(youtube_video)
+		self.split_into_frames(youtube_video)
+		self.get_soundtrack(youtube_video)		
 	end
 
 	def self.increase_reproduction_count(video_id)
@@ -75,4 +73,35 @@ class VideoService
 		  	youtube_video.title = raw_title_elements.first
 		  	youtube_video.format = raw_title_elements.last
   		end
+
+  		def self.split_into_frames(youtube_video)
+			video_directory = self.get_video_directory(youtube_video)
+			src_file = self.get_source_file(youtube_video)
+			aux_title = youtube_video.title.gsub(/[^0-9A-Za-z]/, '')
+			system "ffmpeg -i #{src_file} -r 25 -qscale:v 2 #{video_directory}/#{aux_title}%d.jpg"
+		end
+
+		def self.get_soundtrack(youtube_video)
+			video_directory = self.get_video_directory(youtube_video)
+			src_file = self.get_source_file(youtube_video)
+			aux_title = youtube_video.title.gsub(/[^0-9A-Za-z]/, '') + "SoundTrack" + "." + MP3_FILE_EXTENTION
+			system "ffmpeg -i #{src_file} #{video_directory}/#{aux_title}"
+		end
+
+		def self.get_video_directory(youtube_video)
+			@@videos_base_directory + "/" + youtube_video.title.gsub(/[^0-9A-Za-z]/, '') + "/"
+		end
+
+=begin
+			TODO: arreglar este metodo
+			para sliptear el video va bien, porque toma el primer video de la carpeta,
+			pero al momento de procesar el audio falla dado que ahora tengo cientos de archivos donde antes
+			habia solo uno.
+			Tratar de adaptarlo para que cumpla ambos casos
+=end	
+		def self.get_source_file(youtube_video)
+			video_directory = self.get_video_directory(youtube_video)
+
+			return video_directory + Dir.new(video_directory).entries.select{|file| file.include? youtube_video.title.slice(0)}.first
+		end
 end

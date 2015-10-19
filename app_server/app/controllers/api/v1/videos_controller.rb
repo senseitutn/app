@@ -31,6 +31,7 @@ module Api
   				@youtube_video.url = params[:url]
 
   				VideoService.download_from_youtube(@youtube_video)
+  				VideoService.process_video(@youtube_video)
 			end
 
 			def search_all
