@@ -17,7 +17,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
       if (token === null)
       {
-        $scope.login();
+        //$scope.login();
       }
   
     });
@@ -122,9 +122,9 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
 .controller('VideosCtrl', function($scope, $sce, $state, $http, $localstorage, $timeout, $ionicPopup, $ionicLoading, VideoNuevo, $ionicModal) {
 
-  var id_face = $localstorage.getObject('user').id;
+  //var id_face = $localstorage.getObject('user').id;
 
-  //var id_face = '10154179806703835';
+  var id_face = '10154179806703835';
   var serverIp = window.localStorage.getItem('serverIp');
 
   $scope.files = [
@@ -209,43 +209,62 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
     if(path == 'Videos'){
         $scope.files =[  
         { name: 'Videos viejos', nativeURL: 'Videos viejos', isDirectory: true, isFile: false },
-        { name: 'Glaciares en Alaska', nativeURL: 'Glaciares en Alaska', isDirectory: false, isFile: true },
+        { name: 'Bernabeu', nativeURL: 'Bernabeu', isDirectory: false, isFile: true },
         { name: 'Perdido en Paris', nativeURL: 'Perdido en Paris', isDirectory: false, isFile: true },
         { name: 'Viaje en helicoptero', nativeURL: 'Viaje en helicoptero', isDirectory: false, isFile: true }
         ];
     };
-    if(path == 'Glaciares en Alaska'){
-
-
+    if(path == 'Bernabeu'){
 
       var videoNuevo = new VideoNuevo;
       videoNuevo.id_facebook = id_face;
-      videoNuevo.title = "Glaciares en Alaska";
-      videoNuevo.description = "Vea los glaciares derritiendose en Alaska";
-      videoNuevo.url = "https://www.youtube.com/embed/XtbgPurqkUc";
+      videoNuevo.title = "Bernabeu";
+      videoNuevo.description = "Vive en carne propia el estadio del Real Madrid";
+      videoNuevo.url = "https://www.youtube.com/embed/R5NlBydVDQg";
       
-      VideoNuevo.save(videoNuevo, function(){
-            console.log('se creo el video');
-      });
-   
-      $ionicLoading.show({
-        content: 'Loading',
-        animation: 'fade-in',
-        showBackdrop: true,
-        maxWidth: 200,
-        showDelay: 0,
-        duration: 3800
-      });
+      var result = VideoNuevo.save(videoNuevo, function(){
+            console.log('se creo el video '+result);
+      }); 
 
-      setTimeout(function(){
-            $ionicPopup.alert({
-              content: 'Video subido exitosamente'
-            }).then(function(res) {
-                  //console.log('error en el alert '+res);
-            });
-       //your code to be executed after 1 seconds
-      }, 4000);      
-   
+      result.$promise.then(function(success){
+
+        $ionicLoading.show({
+          content: 'Loading',
+          animation: 'fade-in',
+          showBackdrop: true,
+          maxWidth: 200,
+          showDelay: 0,
+          duration: 3800
+        });
+
+        setTimeout(function(){
+              $ionicPopup.alert({
+                content: 'Video subido exitosamente'
+              }).then(function(res) {
+                    //console.log('error en el alert '+res);
+              });
+         //your code to be executed after 1 seconds
+        }, 4000);    
+
+      }, function(failed){
+        $ionicLoading.show({
+            content: 'Loading',
+            animation: 'fade-in',
+            showBackdrop: true,
+            maxWidth: 200,
+            showDelay: 0,
+            duration: 2800
+          });
+
+          setTimeout(function(){
+                $ionicPopup.alert({
+                  content: 'Error al subir el video'
+                }).then(function(res) {
+                      //console.log('error en el alert '+res);
+                });
+           //your code to be executed after 1 seconds
+          }, 3000);  
+        });   
   
       $scope.modal.hide();
     };
@@ -263,27 +282,49 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       videoNuevo.description = "Transportese a un bar en Paris";
       videoNuevo.url = "https://www.youtube.com/embed/Xe6YI-Ax3d0";
       
-      VideoNuevo.save(videoNuevo, function(){
+      var result = VideoNuevo.save(videoNuevo, function(){
               console.log('se creo el video');
               });
-      $ionicLoading.show({
-        content: 'Loading',
-        animation: 'fade-in',
-        showBackdrop: true,
-        maxWidth: 200,
-        showDelay: 0,
-        duration: 3800
-      });
 
-      setTimeout(function(){
-            $ionicPopup.alert({
-              content: 'Video subido exitosamente'
-            }).then(function(res) {
-                  //console.log('error en el alert '+res);
-            });
-       //your code to be executed after 1 seconds
-      }, 4000);      
-   
+      result.$promise.then(function(success){
+        
+        $ionicLoading.show({
+          content: 'Loading',
+          animation: 'fade-in',
+          showBackdrop: true,
+          maxWidth: 200,
+          showDelay: 0,
+          duration: 3800
+        });
+
+        setTimeout(function(){
+              $ionicPopup.alert({
+                content: 'Video subido exitosamente'
+              }).then(function(res) {
+                    //console.log('error en el alert '+res);
+              });
+         //your code to be executed after 1 seconds
+        }, 4000);    
+
+      }, function(failed){
+        $ionicLoading.show({
+            content: 'Loading',
+            animation: 'fade-in',
+            showBackdrop: true,
+            maxWidth: 200,
+            showDelay: 0,
+            duration: 2800
+          });
+
+          setTimeout(function(){
+                $ionicPopup.alert({
+                  content: 'Error al subir el video'
+                }).then(function(res) {
+                      //console.log('error en el alert '+res);
+                });
+           //your code to be executed after 1 seconds
+          }, 3000);  
+        });   
 
       $scope.modal.hide();
     }    
@@ -301,26 +342,48 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       videoNuevo.description = "Vea a Sidney, Australia desde arriba de un helicoptero";
       videoNuevo.url = "https://www.youtube.com/embed/Po9PYGw0X28";
       
-      VideoNuevo.save(videoNuevo, function(){
+      var result = VideoNuevo.save(videoNuevo, function(){
               console.log('se creo el video');
               });
-      $ionicLoading.show({
-        content: 'Loading',
-        animation: 'fade-in',
-        showBackdrop: true,
-        maxWidth: 200,
-        showDelay: 0,
-        duration: 3800
-      });
+      result.$promise.then(function(success){
+        
+        $ionicLoading.show({
+          content: 'Loading',
+          animation: 'fade-in',
+          showBackdrop: true,
+          maxWidth: 200,
+          showDelay: 0,
+          duration: 3800
+        });
 
-      setTimeout(function(){
-            $ionicPopup.alert({
-              content: 'Video subido exitosamente'
-            }).then(function(res) {
-                  //console.log('error en el alert '+res);
-            });
-       //your code to be executed after 1 seconds
-      }, 4000);      
+        setTimeout(function(){
+              $ionicPopup.alert({
+                content: 'Video subido exitosamente'
+              }).then(function(res) {
+                    //console.log('error en el alert '+res);
+              });
+         //your code to be executed after 1 seconds
+        }, 4000);    
+
+      }, function(failed){
+        $ionicLoading.show({
+            content: 'Loading',
+            animation: 'fade-in',
+            showBackdrop: true,
+            maxWidth: 200,
+            showDelay: 0,
+            duration: 2800
+          });
+
+          setTimeout(function(){
+                $ionicPopup.alert({
+                  content: 'Error al subir el video'
+                }).then(function(res) {
+                      //console.log('error en el alert '+res);
+                });
+           //your code to be executed after 1 seconds
+          }, 3000);  
+        });   
    
 
       $scope.modal.hide();

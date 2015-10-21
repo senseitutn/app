@@ -12,7 +12,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ngResou
 
 .run(function($ionicPlatform) {
   
-  window.localStorage.setItem('serverIp', 'http://192.168.1.128:3000/api/v1/');
+  window.localStorage.setItem('serverIp', 'http://192.168.1.159:3000/api/v1/');
 
   $ionicPlatform.ready(function() {
 
