@@ -17,17 +17,29 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
       if (token === null)
       {
-        $scope.login();
+       // $scope.login();
       }
   
     });
+
+   $scope.fbLogout = function() {
+  
+    //delete local storage information
+    $localstorage.deleteObject('user');
+    //delete scope user
+    $scope.user = null;
+
+    $scope.modal.show();
+
+    } ;
+
   $scope.shareApp = function(){
    // $cordovaSocialSharing.share("This is your message", "This is your subject", "www/imagefile.png", "http://blog.nraboy.com")
       $cordovaSocialSharing
       .shareViaFacebook("Descargate SenseIT!", "www/img/logo.jpg", "www/img/logo.jpg")
       .then(function(result){
            $ionicPopup.alert({
-              content: 'El video se compartió en Facebook!'
+              content: 'La aplicación se compartió en Facebook!'
             }).then(function(res) {
               console.log('error en el alert');
             });
@@ -81,6 +93,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
               last_name: result.last_name,
               email: result.email
               });
+             $scope.user = $localstorage.getObject('user');
 
              //mando al servidor el usuario para que lo cree 
               var newUser = new User();
@@ -438,7 +451,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
                   //console.log('error en el alert '+res);
             });
        //your code to be executed after 1 seconds
-      }, 5000); },
+      }, 5000) } ,
       function(error){
           $ionicLoading.show({
           content: 'Loading',
@@ -578,11 +591,11 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 })
 
 
-.controller('historialCtrl', function($scope,$http, $sce, $localstorage, $window){
+.controller('historialCtrl', function($scope,$http, $sce, $state, $localstorage, $window){
 
     //busco id usuario en localStorage
     var id_face = $localstorage.getObject('user').id;
-    //var id_face='10154179806703835';
+    var id_face='10154179806703835';
     var serverIp = window.localStorage.getItem('serverIp');
 
     $http.get(serverIp +'histories/get-by-user-ordered-by-date/'+id_face).success(function(data) {
@@ -610,7 +623,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
         
         var idvideo = $scope.historial[i].video_id; 
 
-        $http.get(serverIp +'histories/get-by-user-ordered-by-date/'+ id_face).success(function(data) {
+        $http.get(serverIp +'videos/get-by-id/'+ idvideo).success(function(data) {
         $scope.videos_historial[j] = data;   
         var src = $scope.videos_historial[j].url;
 
@@ -628,7 +641,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
             
 });
-   
+  
 
   $scope.open = function(item){
   
@@ -803,9 +816,30 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
     });
   };
 
+  $scope.doRefresh = function() {
+
+
+    $http.get(serverIp +'videos/get-recents/').success(function(data) {
+        $scope.videos = data.videos;
+        var len = $scope.videos.length;
+        for(var i=0;i< len;i++)
+        { 
+          var src= $scope.videos[i].url; 
+
+          $scope.videos[i].url = $sce.trustAsHtml('<iframe width="250px" height="150px" src="'+src+'" frameborder="0" allowfullscreen></iframe>');
+        }
+
+    })       
+    .finally(function() {
+         // Stop the ion-refresher from spinning
+         $scope.$broadcast('scroll.refreshComplete');
+       });
+
+  };
+
 })
 
-.controller('FavoritosCtrl', function ($scope, $state, $localstorage, $http, $sce) {
+.controller('FavoritosCtrl', function ($scope, $state, $localstorage, $ionicPopup, $http, $sce) {
 
   var id_face = $localstorage.getObject('user').id;
   var serverIp = window.localStorage.getItem('serverIp');
@@ -847,6 +881,25 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       $state.go('app.home');
     });
 
+
+  $scope.open = function(item){
+
+       $state.go('app.video', { id: item.id});
+    };
+    
+  $scope.isOpen = function(item){
+      return $scope.opened === item;
+  };
+  
+  $scope.anyItemOpen = function() {
+      return $scope.opened !== undefined;
+  };
+  
+  $scope.close = function() {
+      $scope.opened = undefined;
+  };
+
+
     $scope.doRefresh = function() {
       $http.get(serverIp +'favourites/get-with-user/'+id_face)
        .then(function(data) {
@@ -871,55 +924,4 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
        });
     };
 
-})
-
-
-.controller('ProfileCtrl', function ($scope, $state, $localstorage, $ionicModal) {
-  
-  $scope.user = $localstorage.getObject('user');
-
-  // Triggered in the login modal to close it
-  $scope.closeLogin = function() {
-    $scope.modal.hide();
-  };
-  $scope.shareApp = function(){
-      $cordovaSocialSharing
-      .shareViaFacebook("Descargate SenseIT!! Y disfrutá de la mejor aplicación de realidad virtual. https://play.google.com/store?hl=es-419", null,"img/logo_transparent.png")
-      .then(function(result){
-           $ionicPopup.alert({
-              content: 'El video se compartió en Facebook!'
-            }).then(function(res) {
-              console.log('error en el alert');
-            });
-      }, function(err){
-           $ionicPopup.alert({
-              content: 'Error al compartir la aplicación en Facebook :('
-            }).then(function(res) {
-              console.log('error en el alert');
-            });
-      });
-
-  };
-  $scope.fbLogout = function() {
-  
-    //delete local storage information
-    $localstorage.deleteObject('user');
-    //delete scope user
-    $scope.user = null;
-    //show login modal again
-    // Form data for the login modal
-    $scope.loginData = {};
- 
-    // Create the login modal that we will use later
-    $ionicModal.fromTemplateUrl('templates/login.html', {
-        scope: $scope,
-        animation: 'slide-in-up'
-      }).then(function(modal) {
-        $scope.modal = modal;
-        //$state.go('app.home');
-        $scope.modal.show();
-
-    }) ;
-
-  }
 });

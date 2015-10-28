@@ -12,7 +12,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ngResou
 
 .run(function($ionicPlatform) {
   
-  window.localStorage.setItem('serverIp', 'http://10.5.4.226:3000/api/v1/');
+  window.localStorage.setItem('serverIp', 'http://192.168.1.159:3000/api/v1/');
 
   $ionicPlatform.ready(function() {
 
@@ -82,7 +82,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ngResou
     views: {
         'menuContent': {
             templateUrl: "templates/profile.html",
-            controller: "ProfileCtrl"
+            controller: "AppCtrl"
         }
     }
 })
