@@ -17,7 +17,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
       if (token === null)
       {
-        //$scope.login();
+        $scope.login();
       }
   
     });
@@ -122,9 +122,9 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
 .controller('VideosCtrl', function($scope, $sce, $state, $http, $localstorage, $timeout, $ionicPopup, $ionicLoading, VideoNuevo, $ionicModal) {
 
-  //var id_face = $localstorage.getObject('user').id;
+  var id_face = $localstorage.getObject('user').id;
 
-  var id_face = '10154179806703835';
+  //var id_face = '10154179806703835';
   var serverIp = window.localStorage.getItem('serverIp');
 
   $scope.files = [
@@ -270,12 +270,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
     };
 
     if(path == 'Perdido en Paris'){
-      $ionicPopup.alert({
-            content: 'Video subido exitosamente'
-          }).then(function(res) {
-            //console.log('error en el alert '+res);
-      });
-
+  
       var videoNuevo = new VideoNuevo;
       videoNuevo.id_facebook = id_face;
       videoNuevo.title = "Perdido en Paris";
@@ -330,11 +325,6 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
     }    
 
     if(path == 'Viaje en helicoptero'){
-      $ionicPopup.alert({
-            content: 'Video subido exitosamente'
-          }).then(function(res) {
-            //console.log('error en el alert '+res);
-      });
 
       var videoNuevo = new VideoNuevo;
       videoNuevo.id_facebook = id_face;
@@ -426,9 +416,11 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       videoNuevo.url = "https://www.youtube.com/embed/bBZhuqPRx9c";
       
 
-      VideoNuevo.save(videoNuevo, function(){
+      var result = VideoNuevo.save(videoNuevo, function(){
               console.log('se creo el video');
               });
+
+      result.$promise.then(function(success){
 
       $ionicLoading.show({
         content: 'Loading',
@@ -446,7 +438,27 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
                   //console.log('error en el alert '+res);
             });
        //your code to be executed after 1 seconds
-      }, 5000);  
+      }, 5000); },
+      function(error){
+          $ionicLoading.show({
+          content: 'Loading',
+          animation: 'fade-in',
+          showBackdrop: true,
+          maxWidth: 200,
+          showDelay: 0,
+          duration: 3800
+        });
+
+        setTimeout(function(){
+              $ionicPopup.alert({
+                content: 'Error al descargar el video'
+              }).then(function(res) {
+                    //console.log('error en el alert '+res);
+              });
+         //your code to be executed after 1 seconds
+        }, 4000);
+
+      } );
 
     $scope.modal.hide();
   };
