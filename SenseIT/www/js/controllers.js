@@ -485,6 +485,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
     //Mi usuario de face
     //var id_face='10154179806703835';
     var serverIp = window.localStorage.getItem('serverIp');
+    var ipUnity = window.localStorage.getItem('ipUnity');
 
     $http.get(serverIp +'videos/get-by-id/'+ $stateParams.id).success(function(data) {
             $scope.video = data;
@@ -518,6 +519,9 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
       userHistory.id_facebook = id_face;
       userHistory.video_id = $scope.video.id;
+      
+      //Levantar cantidad de frames del server
+      var cantFrames = 2005;
 
 
       var dbResult = History.save(userHistory, function(){
@@ -529,7 +533,9 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
         });
       });
 
-      window.echo("http://10.5.4.161:3000/system/videos/youtube/,Aircraft", function(echoValue) {
+      //Para q funcione
+      $scope.video.title = "Bernabeu1280";
+      window.echo({"ip": ipUnity, "puerto": "3000", "nombre": $scope.video.title, "frames":cantFrames}, function(echoValue) {
         //alert(echoValue == "echome"); // should alert true.
       });
 
@@ -595,7 +601,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
     //busco id usuario en localStorage
     var id_face = $localstorage.getObject('user').id;
-    var id_face='10154179806703835';
+    //var id_face='10154179806703835';
     var serverIp = window.localStorage.getItem('serverIp');
 
     $http.get(serverIp +'histories/get-by-user-ordered-by-date/'+id_face).success(function(data) {
