@@ -39,6 +39,10 @@ user_list.each do |user|
 			:gender => user[4], :facebook_id => user[5])
 end
 
+# Creo usuario administrador
+
+User.create( username:"admin",password: "admin", password_confirmation: "admin", admin: true)
+
 # Instancio usuarios y videos
 
 @u1 = User.find(1)

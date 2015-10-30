@@ -39,5 +39,5 @@ class User < ActiveRecord::Base
  #  	# this is a method provided for rails which allows us to make validations 
  #  	# against a hash table in our database
 	
-	# has_secure_password 
+	has_secure_password 
 end

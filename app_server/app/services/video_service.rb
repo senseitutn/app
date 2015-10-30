@@ -8,6 +8,8 @@ class VideoService
     	@video.url = @video.video.url
     	@video.uploaded_at = DateTime.now
 
+    	User.create(:avatar => File.open('/path/to/image.jpg', 'rb'))
+
     	# TODO: este guardado es provisorio, hay que almacenarlo en un web service
 
     	if @video.save
@@ -18,16 +20,16 @@ class VideoService
 	def self.download_from_youtube(youtube_video)
 		#TODO: download_from youtube
 		set_title(youtube_video)
+		set_folder_path(youtube_video)
 
 		# elimino caracteres especiales para crear el directorio
 		# donde se almacenará el archivo
+		video_folder_name = youtube_video.title.gsub(/[^0-9A-Za-z]/, '')
 		
-		video_folder_name = youtube_video.title.gsub(/[^0-9A-Za-z]/, '')	 
 		destiny_folder = "#{@@videos_base_directory}/#{video_folder_name}"
 		system "mkdir #{destiny_folder}"
   		system "viddl-rb #{youtube_video.url} --save-dir #{destiny_folder}/"
 
-  		#cambio el nombre del video, quitando caracteres especiales
   		file_name = Dir.new(destiny_folder).entries.select{|file| file.include? youtube_video.title.split('.').first}.first
   		new_file_name = file_name.gsub(/[^0-9A-Za-z]/, '')
   		File.rename("#{destiny_folder}/#{file_name}",new_file_name)
@@ -44,6 +46,27 @@ class VideoService
 		video.reproduction_count = video.reproduction_count + 1
 		video.save
 	end	 
+
+	def self.get_video_directory(youtube_video)
+		@@videos_base_directory + "/" + youtube_video.title.gsub(/[^0-9A-Za-z]/, '') + "/"
+	end
+
+	def create_user_video_from_youtube(user, youtube_video)
+		video_file = get_video_file_from_folder(youtube_video)
+		@video = Video.new 
+		@video.title = youtube_video.title
+		@video.url = youtube_video.url
+		@video.video = get_video_file_from_folder(youtube_video)
+		@video.uploaded_at = DateTime.now
+		@video.folder_path = youtube_video.folder_path
+
+		if @video.save
+			create_screenshot(@video)
+			user.videos << @video 
+		end
+
+		return @video
+	end
 
 	private
 		def self.create_screenshot(video)
@@ -65,10 +88,6 @@ class VideoService
 		end
 
 		def self.set_title(youtube_video)
-		  	# @aux_title = system "viddl-rb #{youtube_video.url} -t"
-
-		  	# # le asigno el titulo sin la extensión	
-		  	# youtube_video.title = @aux_title.split('.').first
 		  	raw_title_elements = ViddlRb.get_names(youtube_video.url).first.split('.')
 		  	youtube_video.title = raw_title_elements.first
 		  	youtube_video.format = raw_title_elements.last
@@ -76,32 +95,33 @@ class VideoService
 
   		def self.split_into_frames(youtube_video)
 			video_directory = self.get_video_directory(youtube_video)
-			src_file = self.get_source_file(youtube_video)
+			src_file = video_directory + Dir.new(video_directory).entries.select{|file| file.include? youtube_video.title.slice(0)}.first
 			aux_title = youtube_video.title.gsub(/[^0-9A-Za-z]/, '')
 			system "ffmpeg -i #{src_file} -r 25 -qscale:v 2 #{video_directory}/#{aux_title}%d.jpg"
 		end
 
 		def self.get_soundtrack(youtube_video)
 			video_directory = self.get_video_directory(youtube_video)
-			src_file = self.get_source_file(youtube_video)
+			src_file = video_directory + Dir.new(video_directory).entries.select{|file| !file.include?('.jpg') and file.include? youtube_video.title.slice(0)}.first
 			aux_title = youtube_video.title.gsub(/[^0-9A-Za-z]/, '') + "SoundTrack" + "." + MP3_FILE_EXTENTION
 			system "ffmpeg -i #{src_file} #{video_directory}/#{aux_title}"
 		end
 
-		def self.get_video_directory(youtube_video)
-			@@videos_base_directory + "/" + youtube_video.title.gsub(/[^0-9A-Za-z]/, '') + "/"
+		def self.set_folder_path(youtube_video)
+			youtube_video.folder_path = get_video_directory(youtube_video)
 		end
 
-=begin
-			TODO: arreglar este metodo
-			para sliptear el video va bien, porque toma el primer video de la carpeta,
-			pero al momento de procesar el audio falla dado que ahora tengo cientos de archivos donde antes
-			habia solo uno.
-			Tratar de adaptarlo para que cumpla ambos casos
-=end	
-		def self.get_source_file(youtube_video)
-			video_directory = self.get_video_directory(youtube_video)
+		def self.get_frames_count(youtube_video)
+			#resta 4 dado que no incluye ".", "..", el archivo orig y el mp3
+			return Dir.new(get_video_directory(youtube_video)).entries.length - 4
+		end
 
-			return video_directory + Dir.new(video_directory).entries.select{|file| file.include? youtube_video.title.slice(0)}.first
+		#TODO: get_video_file_from_folder
+		def self.get_video_file_from_folder(youtube_video)
+			video_folder_path = youtube_video.folder_path
+			video_filename = Dir.new(video_folder_path).entries.select{|file| !file.include?('.jpg') and !file.include?('.mp3')}.first
+			video_path = video_folder_path + "/" +video_path
+
+			return File.new(video_path, "r")
 		end
 end

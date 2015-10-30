@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150920232956) do
+ActiveRecord::Schema.define(version: 20151030021216) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string   "access_token"
@@ -64,8 +64,8 @@ ActiveRecord::Schema.define(version: 20150920232956) do
     t.string   "surname"
     t.integer  "failed_login_count"
     t.datetime "disabled_at"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.string   "mail_1"
     t.string   "mail_2"
     t.string   "mail_3"
@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 20150920232956) do
     t.string   "gender"
     t.string   "password_digest"
     t.string   "facebook_id"
+    t.boolean  "admin",              default: false
   end
 
   create_table "users_videos", id: false, force: :cascade do |t|
@@ -96,6 +97,8 @@ ActiveRecord::Schema.define(version: 20150920232956) do
     t.integer  "video_file_size"
     t.datetime "video_updated_at"
     t.integer  "reproduction_count"
+    t.integer  "frames_count"
+    t.string   "folder_path"
   end
 
 end

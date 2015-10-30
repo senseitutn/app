@@ -13,6 +13,9 @@ module Api
 			end
 
 			def create
+				video = params[:video]
+				binding.pry
+				
 				VideoService.create_video(params[:title], params[:description], params[:video])
 			end
 
@@ -27,11 +30,20 @@ module Api
 			###### Customs methods
 
 			def create_from_link
-				@youtube_video = YoutubeVideo.new
-  				@youtube_video.url = params[:url]
+				@user = User.find_by(:facebook_id => params[:id_facebook])
+				if @user
+					@youtube_video = YoutubeVideo.new
+	  				@youtube_video.url = params[:url]
 
-  				VideoService.download_from_youtube(@youtube_video)
-  				VideoService.process_video(@youtube_video)
+	  				VideoService.download_from_youtube(@youtube_video)
+	  				VideoService.process_video(@youtube_video)
+	  				 
+	  				@video = VideoService.create_user_video_from_youtube(@user, @youtube_video)
+	  				
+	  				@msj = 'video could not been downloaded' if @video == nil
+	  			else
+	  				@msj = 'user does not exists'
+	  			end	
 			end
 
 			def search_all

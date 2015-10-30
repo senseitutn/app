@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  get 'users/index'
+
+  get 'users/show'
+
+  get 'admin/index'
+
   get 'welcome/index'
 
   resources :videos
@@ -64,6 +70,9 @@ Rails.application.routes.draw do
   get 'api/v1/histories/get-by-user-ordered-by-date/:id_facebook', to: "api/v1/histories#get_by_user_ordered_by_date"
 
   post 'api/v1/users/create-video', to: "api/v1/users#create_video"
+
+  # Admin panel
+  get 'admin', to: "admin#index"
 
   # You can have the root of your site routed with "root"
    root 'welcome#index'

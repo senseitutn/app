@@ -44,6 +44,8 @@ GEM
     bcrypt (3.1.10-x86-mingw32)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    bootstrap-will_paginate (0.0.10)
+      will_paginate
     builder (3.2.2)
     byebug (5.0.0)
       columnize (= 0.9.0)
@@ -185,6 +187,7 @@ GEM
       binding_of_caller (>= 0.7.2)
       railties (>= 4.0)
       sprockets-rails (>= 2.0, < 4.0)
+    will_paginate (3.0.7)
 
 PLATFORMS
   ruby
@@ -192,6 +195,7 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt (~> 3.1.7)
+  bootstrap-will_paginate (= 0.0.10)
   byebug
   coffee-rails (~> 4.1.0)
   jbuilder (~> 2.0)
@@ -212,3 +216,4 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   viddl-rb
   web-console (~> 2.0)
+  will_paginate (= 3.0.7)
