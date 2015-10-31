@@ -164,4 +164,4 @@ Favourite.create(:video_id => @v4.id, :user_id => @u5.id, :favourited_at => Date
 @video7.url_preview = @image7.image.url
 @video7.save
 
-=end
+=endAdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password')
