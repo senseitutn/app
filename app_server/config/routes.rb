@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
   get 'users/index'
 
   get 'users/show'
@@ -40,7 +42,6 @@ Rails.application.routes.draw do
   get 'api/v1/videos/get-recents/', to: "api/v1/videos#get_recents"
 
   post 'api/v1/videos/create_from_link', to: "api/v1/videos#create_from_link"
-
 
   #### Sprint 3
 

@@ -38,8 +38,17 @@ module Api
 
 			def create_video
 				@user = User.find_by(:facebook_id => params[:id_facebook])
+
+				title = params[:title]
+
+				video_folder_entry = Dir.new(DOWNLOADED_VIDEOS_FOLDER).entries.select{|file| file.include? title.slice(4)}.first
+				folder_video =  DOWNLOADED_VIDEOS_FOLDER + "/" + video_folder_entry
+				frames_count = Dir.new(folder_video).entries.count - 4
+
 				@video = @user.videos.create(:title => params[:title], 
-					:description => params[:description] , :url => params[:url], :uploaded_at => DateTime.now)
+					:description => params[:description] , :folder_path => video_folder_entry, 
+					:frames_count => frames_count, :url => params[:url], 
+					:uploaded_at => DateTime.now)
 			end
 
 			#Get the user favourites
