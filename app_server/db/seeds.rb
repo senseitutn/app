@@ -41,7 +41,7 @@ end
 
 # Creo usuario administrador
 
-User.create( username:"admin",password: "admin", password_confirmation: "admin", admin: true)
+# User.create( username:"admin",password: "admin", password_confirmation: "admin", admin: true)
 
 # Instancio usuarios y videos
 

@@ -71,6 +71,8 @@ Rails.application.routes.draw do
 
   post 'api/v1/users/create-video', to: "api/v1/users#create_video"
 
+  post 'api/v1/videos/create-video-from-youtube', to: "api/v1/videos#create_from_link"
+
   # Admin panel
   get 'admin', to: "admin#index"
 
