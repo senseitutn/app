@@ -17,7 +17,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
       if (token === null)
       {
-       // $scope.login();
+        //$scope.login();
       }
   
     });
@@ -36,22 +36,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
   $scope.shareApp = function(){
    // $cordovaSocialSharing.share("This is your message", "This is your subject", "www/imagefile.png", "http://blog.nraboy.com")
       $cordovaSocialSharing
-      .shareViaFacebook("Descargate SenseIT!", "www/img/logo.jpg", "www/img/logo.jpg")
-      .then(function(result){
-           $ionicPopup.alert({
-              content: 'La aplicación se compartió en Facebook!'
-            }).then(function(res) {
-              console.log('error en el alert');
-            });
-      }, function(err){
-           $ionicPopup.alert({
-              content: 'Error al compartir la aplicación en Facebook :('
-            }).then(function(res) {
-              console.log('error en el alert');
-              alert("error: "+err.message);
-            });
-        
-      });
+      .shareViaFacebook("Descargate SenseIT!", "www/img/logo.jpg", "www/img/logo.jpg");
 
   };
 
@@ -133,11 +118,10 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
 
 }})
 
-.controller('VideosCtrl', function($scope, $sce, $state, $http, $localstorage, $timeout, $ionicPopup, $ionicLoading, VideoNuevo, $ionicModal) {
+.controller('VideosCtrl', function($scope, $sce, $state, $http, $parse, $localstorage, $timeout, $ionicPopup, $ionicLoading, VideoNuevo, $ionicModal) {
 
   var id_face = $localstorage.getObject('user').id;
-
-  //var id_face = '10154179806703835';
+  var id_face = '10154179806703835';
   var serverIp = window.localStorage.getItem('serverIp');
 
   $scope.files = [
@@ -154,15 +138,6 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       // when the response is available
       $scope.videos = data.data.videos;
       var len = $scope.videos.length;
-
-      if(len == 0){
-          $ionicPopup.alert({
-            content: 'Este usuario no tiene videos propios.'
-          }).then(function(res) {
-            //console.log('error en el alert '+res);
-          });
-      }
-
       for(var i=0;i<len;i++)
       { 
         var src= $scope.videos[i].url; 
@@ -171,8 +146,17 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       }
 
     }, function(response) {
+
+          $ionicPopup.alert({
+            content: 'No se encontraron videos de este usuario.'
+          }).then(function(res) {
+            console.log('error en el alert');
+          });
+
       
     });
+
+
 
   $scope.open = function(item){
 
@@ -223,8 +207,8 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
         $scope.files =[  
         { name: 'Videos viejos', nativeURL: 'Videos viejos', isDirectory: true, isFile: false },
         { name: 'Bernabeu', nativeURL: 'Bernabeu', isDirectory: false, isFile: true },
-        { name: 'Perdido en Paris', nativeURL: 'Perdido en Paris', isDirectory: false, isFile: true },
-        { name: 'Viaje en helicoptero', nativeURL: 'Viaje en helicoptero', isDirectory: false, isFile: true }
+        { name: 'Airplane', nativeURL: 'Airplane', isDirectory: false, isFile: true },
+        { name: 'Avicii', nativeURL: 'Avicii', isDirectory: false, isFile: true }
         ];
     };
     if(path == 'Bernabeu'){
@@ -251,10 +235,10 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
         });
 
         setTimeout(function(){
-              $ionicPopup.alert({
+             $ionicPopup.alert({
                 content: 'Video subido exitosamente'
               }).then(function(res) {
-                    //console.log('error en el alert '+res);
+                    //$ionicPoconsole.log('error en el alert '+res);
               });
          //your code to be executed after 1 seconds
         }, 4000);    
@@ -270,11 +254,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
           });
 
           setTimeout(function(){
-                $ionicPopup.alert({
-                  content: 'Error al subir el video'
-                }).then(function(res) {
-                      //console.log('error en el alert '+res);
-                });
+
            //your code to be executed after 1 seconds
           }, 3000);  
         });   
@@ -282,14 +262,15 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       $scope.modal.hide();
     };
 
-    if(path == 'Perdido en Paris'){
+    if(path == 'Airplane'){
   
       var videoNuevo = new VideoNuevo;
       videoNuevo.id_facebook = id_face;
-      videoNuevo.title = "Perdido en Paris";
-      videoNuevo.description = "Transportese a un bar en Paris";
-      videoNuevo.url = "https://www.youtube.com/embed/Xe6YI-Ax3d0";
-      
+      videoNuevo.title = "Airplane";
+      videoNuevo.description = "Avion a helice que sigue muy de cerca a un F22 durante su vuelo";
+      //videoNuevo.url = "https://www.youtube.com/embed/-RFjROsovWs";
+      videoNuevo.url = "https://www.youtube.com/embed/LD4XfM2TZ2k";
+
       var result = VideoNuevo.save(videoNuevo, function(){
               console.log('se creo el video');
               });
@@ -337,13 +318,13 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       $scope.modal.hide();
     }    
 
-    if(path == 'Viaje en helicoptero'){
+    if(path == 'Avicii'){
 
       var videoNuevo = new VideoNuevo;
       videoNuevo.id_facebook = id_face;
-      videoNuevo.title = "Viaje en helicoptero";
-      videoNuevo.description = "Vea a Sidney, Australia desde arriba de un helicoptero";
-      videoNuevo.url = "https://www.youtube.com/embed/Po9PYGw0X28";
+      videoNuevo.title = "Avicii";
+      videoNuevo.description = "Videoclip de Avicii Waiting for Love";
+      videoNuevo.url = "https://www.youtube.com/embed/edcJ_JNeyhg";
       
       var result = VideoNuevo.save(videoNuevo, function(){
               console.log('se creo el video');
@@ -421,59 +402,78 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       }).then(function(res) {
         console.log('error en el alert');
       });*/
+      var input;
+      enteredValue.split(input)[13];
+      if(enteredValue == "https://youtu.be"){
+        var i;
+      };
+      var input2 = enteredValue.match(/.{1,16}/g);
 
-      var videoNuevo = new VideoNuevo;
-      videoNuevo.id_facebook = id_face;
-      videoNuevo.title = "Experiencia Neimar";
-      videoNuevo.description = "Mueva su telefono para tomar el terreno de juego como el numero 10 de Brasil";
-      videoNuevo.url = "https://www.youtube.com/embed/bBZhuqPRx9c";
-      
+      if(input2[0] == "https://youtu.be")
+      {
+        var videoNuevo = new VideoNuevo;
+        videoNuevo.id_facebook = id_face;
+        videoNuevo.title = "Neimar Experience";
+        videoNuevo.description = "Mueva su telefono para tomar el terreno de juego como el numero 10 de Brasil";
+        videoNuevo.url = "https://www.youtube.com/embed/bBZhuqPRx9c";
+        
 
-      var result = VideoNuevo.save(videoNuevo, function(){
-              console.log('se creo el video');
-              });
+        var result = VideoNuevo.save(videoNuevo, function(){
+                console.log('se creo el video');
+                });
 
-      result.$promise.then(function(success){
+        result.$promise.then(function(success){
 
-      $ionicLoading.show({
-        content: 'Loading',
-        animation: 'fade-in',
-        showBackdrop: true,
-        maxWidth: 200,
-        showDelay: 0,
-        duration: 4800
-      });
-
-      setTimeout(function(){
-            $ionicPopup.alert({
-              content: 'Video descargado exitosamente'
-            }).then(function(res) {
-                  //console.log('error en el alert '+res);
-            });
-       //your code to be executed after 1 seconds
-      }, 5000) } ,
-      function(error){
-          $ionicLoading.show({
+        $ionicLoading.show({
           content: 'Loading',
           animation: 'fade-in',
           showBackdrop: true,
           maxWidth: 200,
           showDelay: 0,
-          duration: 3800
+          duration: 4800
         });
 
         setTimeout(function(){
               $ionicPopup.alert({
-                content: 'Error al descargar el video'
+                content: 'Video descargado exitosamente'
               }).then(function(res) {
                     //console.log('error en el alert '+res);
               });
          //your code to be executed after 1 seconds
-        }, 4000);
+        }, 5000) } ,
+        function(error){
+            $ionicLoading.show({
+            content: 'Loading',
+            animation: 'fade-in',
+            showBackdrop: true,
+            maxWidth: 200,
+            showDelay: 0,
+            duration: 3800
+          });
 
-      } );
+          setTimeout(function(){
+                $ionicPopup.alert({
+                  content: 'Error al descargar el video'
+                }).then(function(res) {
+                      //console.log('error en el alert '+res);
+                });
+           //your code to be executed after 1 seconds
+          }, 4000);
 
-    $scope.modal.hide();
+        } );
+        $scope.modal.hide();
+
+      }
+      else
+      {
+        $ionicPopup.alert({
+          content: 'Por favor ingrese un link de youtube.'
+        }).then(function(res) {
+              //console.log('error en el alert '+res);
+        });
+      }
+
+    
   };
 
   
@@ -497,20 +497,8 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
     $scope.share= function(){
 
       $cordovaSocialSharing
-      .shareViaFacebook("Mira este video en 360! Disfrutalo en realidad virtual con SenseIT", null,$scope.video.url)
-      .then(function(result){
-           $ionicPopup.alert({
-              content: 'El video se compartió en Facebook!'
-            }).then(function(res) {
-              console.log('error en el alert');
-            });
-      }, function(err){
-           $ionicPopup.alert({
-              content: 'Error al compartir el video en Facebook :('
-            }).then(function(res) {
-              console.log('error en el alert');
-            });
-      });
+      .shareViaFacebook("Mira este video en 360! Disfrutalo en realidad virtual con SenseIT", null,$scope.video.url);
+
     };
 
     $scope.reproducir = function(){
@@ -521,7 +509,7 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       userHistory.video_id = $scope.video.id;
       
       //Levantar cantidad de frames del server
-      var cantFrames = 2005;
+      //var cantFrames = 2005;
 
 
       var dbResult = History.save(userHistory, function(){
@@ -534,8 +522,8 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
       });
 
       //Para q funcione
-      $scope.video.title = "Bernabeu1280";
-      window.echo({"ip": ipUnity, "puerto": "3000", "nombre": $scope.video.title, "frames":cantFrames}, function(echoValue) {
+      //$scope.video.title = "Bernabeu1280";
+      window.echo({"ip": ipUnity, "puerto": "3000", "nombre": $scope.video.folder_path, "frames":$scope.video.frames_count}, function(echoValue) {
         //alert(echoValue == "echome"); // should alert true.
       });
 
@@ -884,7 +872,6 @@ angular.module('starter.controllers', ['starter.services', 'ngResource', 'plugin
           }).then(function(res) {
             console.log('error en el alert');
           });
-      $state.go('app.home');
     });
 
 

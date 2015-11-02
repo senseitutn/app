@@ -7,11 +7,13 @@
     
     <div class="list" show-reoder="true">     
 
-        <ion-item class="item item=thumbnail-left center" ng-click="open(historia)" ng-repeat="historia in videos_historial track by $index">
+         <h5 class= "letra-videos" ng-show="!videos.length">El usuario no tiene historial</h5>
+
+        <ion-item class="item center" ng-click="open(historia)" ng-repeat="historia in videos_historial track by $index">
           <div ng-bind-html="historia.url"></div>
-          <h3>{{historia.title}}</h3>
+          <h3 class="left">{{historia.title}}</h3>
           <p show-data='' youtube="{{historia.url}}"></p>
-          <p>{{historia.description}}</p>
+          <p class="left">{{historia.description}}</p>
         </ion-item>  
 
         <ng-switch on="anyItemOpen()">

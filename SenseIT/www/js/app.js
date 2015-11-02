@@ -11,9 +11,12 @@
 angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ngResource'])
 
 .run(function($ionicPlatform) {
+
+  var ip = '192.168.1.159';
   
-  window.localStorage.setItem('serverIp', 'http://192.168.1.159:3000/api/v1/');
-  window.localStorage.setItem('ipUnity', '192.168.1.159');
+  window.localStorage.setItem('ipUnity', ip);
+  window.localStorage.setItem('serverIp', "http://"+ip+":3000/api/v1/");
+
 
   $ionicPlatform.ready(function() {
 

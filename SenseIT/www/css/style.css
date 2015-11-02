@@ -8,10 +8,29 @@
 	padding: 0 0 0 0 !important;
 }
 
+.letra-videos{
+    text-align: center;
+    padding-top: 30px;
+    color: #3385FF;
+}
+
 .center {
     margin: auto;
+    text-align: center;
+}
 
-    padding-left: 50px;
+.vertical-align-medio{
+    vertical-align: middle;
+    padding-top: 30%;
+}
+
+.margin-centro{
+    margin: auto;
+}
+
+.left{
+    text-align: left;
+    padding-left: 41px;
 }
 .popup-body{
     text-align: center !important;
@@ -63,3 +82,4 @@
 .separate {
    padding-right: 10px;
 }
+

@@ -13,11 +13,11 @@
 		<div class="list" ng-controller="HomeCtrl" show-reorder="true">
 
 
-				<ion-item class="item item=thumbnail-left center" ng-click="open(video)" ng-repeat="video in videos track by $index">
+				<ion-item class="item center" ng-click="open(video)" ng-repeat="video in videos track by $index">
 			          <div ng-bind-html="video.url" ></div>
-			          <h3 >{{video.title}}</h3>
+			          <h3 class="left">{{video.title}}</h3>
 			          <p show-data='' youtube="{{video.url}}"></p>
-			          <p>{{video.description}}</p>
+			          <p class="left">{{video.description}}</p>
 			          <br/>
 				</ion-item>  
 

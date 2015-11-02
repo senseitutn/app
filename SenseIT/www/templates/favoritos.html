@@ -1,17 +1,20 @@
 <ion-view view-title="Favoritos">
   <ion-content class="has-header">
     <ion-refresher
-    pulling-text="Pull to refresh..."
-    on-refresh="doRefresh()">
+      pulling-text="Pull to refresh..."
+      on-refresh="doRefresh()">
     </ion-refresher>
     <div class="list" show-reoder="true">     
 
-        <ion-item class="item item=thumbnail-left center" ng-click="open(favorito)" ng-repeat="favorito in favoritos track by $index">
+      
+       <h5 class= "letra-videos" ng-show="!videos.length">El usuario no tiene favoritos</h5>
+
+        <ion-item class="item center" ng-click="open(favorito)" ng-repeat="favorito in favoritos track by $index">
 
           <div ng-bind-html="favorito.url"></div>
-          <h3>{{favorito.title}}</h3>
+          <h3 class="left">{{favorito.title}}</h3>
           <p show-data='' youtube="{{favorito.url}}"></p>
-          <p>{{favorito.description}}</p>
+          <p class="left">{{favorito.description}}</p>
 
         </ion-item>  
 

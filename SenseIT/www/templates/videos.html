@@ -11,12 +11,14 @@
           pulling-text="Pull to refresh..."
           on-refresh="doRefreshVideos()">
         </ion-refresher>
- 
-        <ion-item class="item item=thumbnail-left center" ng-click="open(video)" ng-repeat="video in videos">
+        <h5 class= "letra-videos" ng-show="!videos.length">El usuario no tiene videos</h5>
+
+        <ion-item class="item center" ng-click="open(video)" ng-repeat="video in videos">
+
           <div ng-bind-html="video.url"></div>
-          <h3>{{video.title}}</h3>
+          <h3 class="left">{{video.title}}</h3>
           <p show-data='' youtube="{{video.url}}"></p>
-          <p>{{video.description}}</p>
+          <p class="left">{{video.description}}</p>
         </ion-item>  
 
         <ng-switch on="anyItemOpen()">

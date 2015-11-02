@@ -10,6 +10,7 @@ angular.module('starter.services', ['ngResource'])
    
 })
 
+
 .factory('User', function($resource){
   var serverIp = window.localStorage.getItem('serverIp');
   return $resource(serverIp + 'users')
@@ -31,6 +32,7 @@ angular.module('starter.services', ['ngResource'])
   var serverIp = window.localStorage.getItem('serverIp');
   return 1;
 })
+
 .factory('History', function($resource){
   var serverIp = window.localStorage.getItem('serverIp');
   return $resource(serverIp + 'histories/create')
