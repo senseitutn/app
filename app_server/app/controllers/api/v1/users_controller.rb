@@ -41,7 +41,7 @@ module Api
 
 				title = params[:title]
 
-				video_folder_entry = Dir.new(DOWNLOADED_VIDEOS_FOLDER).entries.select{|file| file.include? title.slice(4)}.first
+				video_folder_entry = Dir.new(DOWNLOADED_VIDEOS_FOLDER).entries.select{|file| file.include? title[0..3]}.first
 				folder_video =  DOWNLOADED_VIDEOS_FOLDER + "/" + video_folder_entry
 				frames_count = Dir.new(folder_video).entries.count - 4
 

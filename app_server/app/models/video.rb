@@ -1,6 +1,8 @@
 class Video < ActiveRecord::Base
 	before_save :default_values
 
+	scope :unchecked, -> { where(:checked => false) } 
+
 	#many to many relation with consumers model through favourites
 	has_many :favourites
 	has_many :users, through: :favourites

@@ -10,6 +10,14 @@ ActiveAdmin.register_page "Dashboard" do
       end
     end
 
+    section "Videos recientes" do
+        table_for Video.order("created_at desc").limit(10) do
+          column :title
+          column :released_at
+        end
+        strong { link_to "Todos los videos", admin_videos_path }
+    end
+
     # Here is an example of a simple dashboard with columns and panels.
     #
     # columns do

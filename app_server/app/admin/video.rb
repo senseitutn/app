@@ -1,13 +1,16 @@
 ActiveAdmin.register Video do
-=begin
+	scope "Pendientes de validación",:unchecked
 	index do
-	    column :id
+		selectable_column
+    	id_column
 	    column "Título", :title
-	    column "Url", :url
+	    column "Url" do |video|
+	    	link_to video.url, url_with_protocol(video.url)
+	    end 
 	    column "Fecha de subida", :uploaded_at
-	    column "Pendiente de validación", :checked
+	    column "Válido", :checked
+	    actions
 	end
-=end
 # See permitted parameters documentation:
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
