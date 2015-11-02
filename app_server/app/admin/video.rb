@@ -6,11 +6,31 @@ ActiveAdmin.register Video do
 	    column "Título", :title
 	    column "Url" do |video|
 	    	link_to video.url, url_with_protocol(video.url)
-	    end 
+	    end
+	    # column "Aceptar video" do |video|
+	    # 	link_to "Aceptar", admin_video_set_valid
+	    # end
 	    column "Fecha de subida", :uploaded_at
-	    column "Válido", :checked
-	    actions
+	    actions defaults: true do |video|
+      		link_to 'Accept video', set_valid_admin_video_path(video.id), method: :put
+    	end
 	end
+	
+	member_action :set_valid, method: :put do
+    	redirect_to admin_video_set_valid, notice: "Video aceptado"
+    end
+
+    controller do
+    	def set_valid
+    		@video = Video.find(params[:id])
+    		@video.checked = true
+    		@video.rejected = false
+    		@video.save
+
+    		redirect_to admin_videos_path
+    	end
+    end
+
 # See permitted parameters documentation:
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #

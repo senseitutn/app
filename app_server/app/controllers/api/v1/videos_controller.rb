@@ -62,6 +62,14 @@ module Api
 					@videos = Video.order("created_at desc").limit(10)
 			end
 
+			def set_valid
+				video = Video.find(params[:id])
+
+				video.checked = true
+				video.rejected = false
+				video.save				
+			end
+
 			private
 			def video_params
 				params.require(:video).permit(:title,:url,:description,:duration,:uploaded_at,:video)

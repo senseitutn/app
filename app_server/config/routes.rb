@@ -74,6 +74,9 @@ Rails.application.routes.draw do
 
   post 'api/v1/videos/create-video-from-youtube', to: "api/v1/videos#create_from_link"
 
+  # Entrega final
+  post 'api/v1/videos/set-valid', to: "api/v1/videos#set_valid"
+
   # Admin panel
   get 'admin', to: "admin#index"
 
